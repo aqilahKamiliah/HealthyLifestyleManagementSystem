@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Coach History</title>
+    <link rel="stylesheet" type="text/css" href="style1.css">
 </head>
 <body>
 
@@ -18,27 +19,17 @@
 
 <hr>
 
-<h2>Training History</h2>
+<div class="client-card" onclick="location.href='history_details.php?client=Ali'">
+    <h3>Ali</h3>
+    <p>Goal: Lose Weight</p>
+    <p>2185 kcal/day</p>
+</div>
 
-<table border="1">
-    <tr>
-        <th>Date</th>
-        <th>Client</th>
-        <th>Session</th>
-    </tr>
-
-    <tr>
-        <td>01-06-2026</td>
-        <td>Ali</td>
-        <td>Cardio Training</td>
-    </tr>
-
-    <tr>
-        <td>03-06-2026</td>
-        <td>Siti</td>
-        <td>Strength Training</td>
-    </tr>
-</table>
+<div class="client-card" onclick="location.href='history_details.php?client=Maya'">
+    <h3>Maya</h3>
+    <p>Goal: Lose Weight</p>
+    <p>2821 kcal/day</p>
+</div>
 
 </body>
 </html>
