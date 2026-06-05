@@ -7,22 +7,27 @@
     <link rel="stylesheet" type="text/css" href="style1.css">
 </head>
 <body>
-    <header>
-        <div class="headTittle">
-        <?php
-        $sytemName= "Healthy LifeStyle Management System";
-        echo "<h1 class='center'>".$sytemName."</h1>";
-        ?>
-        </div>
 
-        <nav>
-        <a href = "homeAdmin.php"> Home </a > 
-        <a href = "listClient.php"> Client </a > 
-        <a href = "listCoach.php"> Coach </a > 
-        <a href = "listFood"> Food </a > 
-        <a href = "logOut.php"> Log Out </a > 
-        </nav>
-    </header>
-    
+<header>
+
+    <div class="headTittle">
+        <?php
+        $sytemName = "Healthy LifeStyle Management System";
+        echo "<h1 class='center'>" . $sytemName . "</h1>";
+        ?>
+    </div>
+
+   <nav>
+    <a href="coach_profile.php">Profile</a> 
+    <a href="coach_home.php">Home</a> 
+    <a href="coach_clients.php">Client</a> 
+    <a href="recommendation.php">Recommendation</a> 
+    <a href="coach_evaluation.php">Evaluation</a> 
+    <a href="progress.php">Progress</a> 
+    <a href="logOut.php">Log Out</a> 
+</nav>
+
+</header>
+
 </body>
 </html>
