@@ -5,7 +5,7 @@
 </head>
 <body>
 
-<h1>Coach Home</h1>
+<h1>Coach Home</h1>i
 
 <h2>Dashboard</h2>
 
