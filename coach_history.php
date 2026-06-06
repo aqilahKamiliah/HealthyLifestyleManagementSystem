@@ -1,35 +1,80 @@
+<?php include 'headerCoach.php'; ?>
+
 <!DOCTYPE html>
 <html>
 <head>
     <title>Coach History</title>
     <link rel="stylesheet" type="text/css" href="style1.css">
+
+    <style>
+        .container {
+            width: 90%;
+            margin: 30px auto;
+            text-align: center;
+        }
+
+        .client-grid {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .client-card {
+            width: 30%;
+            min-width: 250px;
+            border: 1px solid #ccc;
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            background: #fff;
+            transition: 0.3s;
+        }
+
+        .client-card:hover {
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+    </style>
 </head>
+
 <body>
 
-<h1>Coach History</h1>
+<div class="container">
 
-<nav>
-    <a href="coach_home.php">Home</a> |
-    <a href="coach_profile.php">Profile</a> |
-    <a href="coach_clients.php">Clients</a> |
-    <a href="coach_evaluation.php">Evaluation</a> |
-    <a href="coach_history.php">History</a> |
-    <a href="coach_suggestions.php">Suggestions</a>
-</nav>
+    <h2>Coach History</h2>
+    <p>Select a client to view their full history</p>
 
-<hr>
+    <div class="client-grid">
 
-<div class="client-card" onclick="location.href='history_details.php?client=Ali'">
-    <h3>Ali</h3>
-    <p>Goal: Lose Weight</p>
-    <p>2185 kcal/day</p>
-</div>
+        <a href="history_details.php?client=Ali" style="text-decoration:none; color:black;">
+            <div class="client-card">
+                <h3>Ali</h3>
+                <p>Goal: Lose Weight</p>
+                <p>2185 kcal/day</p>
+            </div>
+        </a>
 
-<div class="client-card" onclick="location.href='history_details.php?client=Maya'">
-    <h3>Maya</h3>
-    <p>Goal: Lose Weight</p>
-    <p>2821 kcal/day</p>
+        <a href="history_details.php?client=Maya" style="text-decoration:none; color:black;">
+            <div class="client-card">
+                <h3>Maya</h3>
+                <p>Goal: Maintain Weight</p>
+                <p>1650 kcal/day</p>
+            </div>
+        </a>
+
+        <a href="history_details.php?client=Adi" style="text-decoration:none; color:black;">
+            <div class="client-card">
+                <h3>Adi</h3>
+                <p>Goal: Gain Weight</p>
+                <p>2150 kcal/day</p>
+            </div>
+        </a>
+
+    </div>
+
 </div>
 
 </body>
 </html>
+
