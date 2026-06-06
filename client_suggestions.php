@@ -1,20 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Client Suggestions</title>
-</head>
-<body>
-
-<h1>Client Suggestions</h1>
-
-<nav>
-    <a href="client_home.php">Home</a> |
-    <a href="client_profile.php">Profile</a> |
-    <a href="client_log.php">Weight Log</a> |
-    <a href="client_suggestions.php">Suggestions</a> |
-</nav>
-
-<hr>
+<?php include 'headerClient.php'; ?>
 
 <h2>My Fitness & Diet Suggestions</h2>
 
