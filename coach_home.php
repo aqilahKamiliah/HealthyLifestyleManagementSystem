@@ -1,32 +1,43 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Coach Home</title>
+    <title>Home</title>
+    <link rel="stylesheet" type="text/css" href="style1.css">
 </head>
+
 <body>
 
-<h1>Coach Home</h1>
+<?php include 'headerCoach.php'; ?>
 
-<nav>
-    <a href="coach_home.php">Home</a> |
-    <a href="coach_profile.php">Profile</a> |
-    <a href="coach_clients.php">Clients</a> |
-    <a href="coach_evaluation.php">Evaluation</a> |
-    <a href="coach_history.php">History</a> |
-    <a href="coach_suggestions.php">Suggestions</a>
-</nav>
+<div style="width:80%; margin:30px auto;">
 
-<hr>
+    <div style="display:flex; justify-content:space-between;">
 
-<h2>Dashboard</h2>
+        <div style="border:1px solid #ccc; padding:20px; border-radius:15px; width:30%; text-align:center;">
+            <h3>Total Clients</h3>
+            <h1>5</h1>
+            <p>Active Clients</p>
+        </div>
 
-<p>Welcome Coach!</p>
+        <div style="border:1px solid #ccc; padding:20px; border-radius:15px; width:30%; text-align:center;">
+            <h3>Upcoming Sessions</h3>
+            <h1>2</h1>
+            <p>This Week</p>
+        </div>
 
-<ul>
-    <li>Total Clients: 2</li>
-    <li>Active Programs: 3</li>
-    <li>Pending Evaluations: 1</li>
-</ul>
+    </div>
+
+    <div style="display:flex; justify-content:center; margin-top:30px;">
+
+        <div style="border:1px solid #ccc; padding:20px; border-radius:15px; width:30%; text-align:center;">
+            <h3>Completed Sessions</h3>
+            <h1>10</h1>
+            <p>This Month</p>
+        </div>
+
+    </div>
+
+</div>
 
 </body>
 </html>

@@ -1,44 +1,87 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Coach Clients</title>
+    <title>Client</title>
+    <link rel="stylesheet" type="text/css" href="style1.css">
 </head>
+
 <body>
 
-<h1>Coach Clients</h1>
+<?php include 'headerCoach.php'; ?>
 
-<nav>
-    <a href="coach_home.php">Home</a> |
-    <a href="coach_profile.php">Profile</a> |
-    <a href="coach_clients.php">Clients</a> |
-    <a href="coach_evaluation.php">Evaluation</a> |
-    <a href="coach_history.php">History</a> |
-    <a href="coach_suggestions.php">Suggestions</a>
-</nav>
+<div style="width:80%; margin:30px auto;">
 
-<hr>
+<?php
+if(isset($_GET['name'])) {
+    $name = $_GET['name'];
+?>
 
-<h2>Client List</h2>
+    <!-- ✅ PAGE DETAIL (Makanan) -->
+    <h2><?php echo $name; ?></h2>
 
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Goal</th>
-    </tr>
+    <div style="display:flex; justify-content:center; gap:30px; margin-top:30px;">
 
-    <tr>
-        <td>1</td>
-        <td>Ali</td>
-        <td>Weight Loss</td>
-    </tr>
+        <div style="border:1px solid #ccc; padding:20px; border-radius:10px;">
+            <h3>Breakfast</h3>
+            <p>Food Name: Oatmeal</p>
+            <p>Calories: 300 kcal</p>
+        </div>
 
-    <tr>
-        <td>2</td>
-        <td>Siti</td>
-        <td>Muscle Gain</td>
-    </tr>
-</table>
+        <div style="border:1px solid #ccc; padding:20px; border-radius:10px;">
+            <h3>Lunch</h3>
+            <p>Food Name: Chicken Rice</p>
+            <p>Calories: 600 kcal</p>
+        </div>
+
+        <div style="border:1px solid #ccc; padding:20px; border-radius:10px;">
+            <h3>Dinner</h3>
+            <p>Food Name: Salad</p>
+            <p>Calories: 400 kcal</p>
+        </div>
+
+    </div>
+
+    <br>
+    <a href="coach_clients.php">← Back</a>
+
+<?php
+} else {
+?>
+
+    <!-- ✅ PAGE LIST (Client) -->
+    <div style="display:flex; gap:20px;">
+
+        <a href="coach_clients.php?name=Ali" style="text-decoration:none; color:black;">
+            <div style="border:1px solid #ccc; padding:20px; border-radius:10px; width:200px; cursor:pointer;">
+                <h3>Ali</h3>
+                <p>Goal: Lose weight</p>
+                <p>2185 kcal/day</p>
+            </div>
+        </a>
+
+        <a href="coach_clients.php?name=Maya" style="text-decoration:none; color:black;">
+            <div style="border:1px solid #ccc; padding:20px; border-radius:10px; width:200px; cursor:pointer;">
+                <h3>Maya</h3>
+                <p>Goal: Maintain weight</p>
+                <p>1650 kcal/day</p>
+            </div>
+        </a>
+
+        <a href="coach_clients.php?name=Adi" style="text-decoration:none; color:black;">
+            <div style="border:1px solid #ccc; padding:20px; border-radius:10px; width:200px; cursor:pointer;">
+                <h3>Adi</h3>
+                <p>Goal: Gain weight</p>
+                <p>2150 kcal/day</p>
+            </div>
+        </a>
+
+    </div>
+
+<?php
+}
+?>
+
+</div>
 
 </body>
 </html>
