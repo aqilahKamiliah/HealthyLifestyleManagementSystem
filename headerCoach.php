@@ -21,9 +21,9 @@
     <a href="coach_profile.php">Profile</a> 
     <a href="coach_home.php">Home</a> 
     <a href="coach_clients.php">Client</a> 
-    <a href="recommendation.php">Recommendation</a> 
+    <a href="coach_recommendation.php">Recommendation</a> 
     <a href="coach_evaluation.php">Evaluation</a> 
-    <a href="progress.php">Progress</a> 
+    <a href="coach_history.php">History</a> 
     <a href="logOut.php">Log Out</a> 
 </nav>
 
