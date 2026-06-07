@@ -26,8 +26,9 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
 
-    #addButton{
+#addButton{
     background: #50B848;
     color:white;
     border:none;
@@ -36,9 +37,6 @@ body {
     cursor:pointer;
     margin:20px;
     }
-}
-
-
 
 .center{
 text-align: center;
@@ -96,3 +94,38 @@ section{
     height:max-content;
 }
 
+.logoutContainer{
+    width:70%;
+    margin:60px auto;
+    background:#f5f5f5;
+    border-radius:5px;
+}
+
+.logoutHeader{
+    background:#4CAF50;
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+
+.logoutContent{
+    padding:20px;
+    text-align:center;
+}
+
+.logoutOptions{
+    display:flex;
+    justify-content:center;
+    gap:30px;
+    margin-top:30px;
+}
+
+#cancelButton,
+#confirmButton{
+    background:#4CAF50;
+    color:white;
+    border:none;
+    border-radius:15px;
+    padding:18px 40px;
+    cursor:pointer;
+}
