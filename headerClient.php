@@ -23,6 +23,6 @@
     <a href="client_suggestions.php">Suggestions</a>
     <a href="client_history.php">History</a>
     <a href="client_coach_page1.php">Coach</a>
-    <a href="logout.php">Logout</a>
+    <a href="logOutClient.php">Logout</a>
     </nav>
     </header>

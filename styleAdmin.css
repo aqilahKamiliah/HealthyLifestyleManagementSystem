@@ -46,7 +46,7 @@ text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;  
-  /*height: 100vh; /* or any height you want */
+
 }
 
 .coachContainer {
@@ -101,9 +101,9 @@ section{
     border-radius:5px;
 }
 
-.logoutHeader{
+.logoutHeader h2{
     background:#4CAF50;
-    color:white;
+    color: white;
     text-align:center;
     padding:20px;
 }
