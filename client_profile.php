@@ -37,7 +37,7 @@
         }
 
         .form-card {
-            background-color: #e5e5ff; 
+            background-color: #e8f5e9;
             border-radius: 16px;
             padding: 40px;
             text-align: left;
@@ -59,7 +59,7 @@
             font-size: 20px;
             font-weight: 500;
             margin-bottom: 12px;
-            color: #000;
+            color: #2e7d32;
         }
 
         .form-group input[type="number"],
