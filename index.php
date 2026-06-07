@@ -19,20 +19,23 @@
 <div id="loginForm" class="form-container">
     <h2>Login</h2>
 
-    <input type="email" placeholder="Enter your email">
-    <input type="password" placeholder="Enter your password">
 
-    <button class="primary-btn">Login</button>
+    <form action="client_bio.php" method="POST">
+    <input type="email" name="email" placeholder="Enter your email" required>
+    <input type="password" name="password" placeholder="Enter your password" required>
 
-    <button class="secondary-btn" onclick="showRegister()">Create Account</button>
+    <button type="submit" class="primary-btn">Login</button>
+    </form>
+    
+    <button type="button" class="secondary-btn" onclick="showRegister()">Create Account</button>
 </div>
 
 <div id="registerForm" class="form-container">
     <h2>Create Account</h2>
 
-    <input type="text" placeholder="Enter your full name">
-    <input type="email" placeholder="Enter your email">
-    <input type="password" placeholder="Create password">
+    <input type="text" placeholder="Enter your full name" required>
+    <input type="email" placeholder="Enter your email" required>
+    <input type="password" placeholder="Create password" required>
 
     <button onclick="registerSuccess()">Register</button>
 
