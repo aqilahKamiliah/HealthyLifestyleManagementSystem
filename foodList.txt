@@ -1,0 +1,6 @@
+Brown Rice	Grains	440
+Lamb Chops	Protein	343	
+Banana	Fruits	111	
+Apple Juices	Beverages	440	
+Cabbage	Vegetables	10	
+Avocado	Fruits	354	
