@@ -1,3 +1,39 @@
+<?php
+session_start();
+
+if(isset($_POST['submit']))
+{
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    if($email == "client@gmail.com" && $password == "1234")
+    {
+        header("Location: client_bio.php");
+        exit();
+    }
+
+    else if($email == "coach@gmail.com" && $password == "1234")
+    {
+        header("Location: coach_home.php");
+        exit();
+    }
+
+    else if($email == "admin@gmail.com" && $password == "1234")
+    {
+        header("Location: homeAdmin.php");
+        exit();
+    }
+
+    else
+    {
+        echo "<script>
+                alert('Invalid email or password');
+                window.location.href='index.php';
+              </script>";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,12 +55,11 @@
 <div id="loginForm" class="form-container">
     <h2>Login</h2>
 
-
-    <form action="client_bio.php" method="POST">
+    <form action="index.php" method="POST">
     <input type="email" name="email" placeholder="Enter your email" required>
     <input type="password" name="password" placeholder="Enter your password" required>
 
-    <button type="submit" class="primary-btn">Login</button>
+    <button type="submit" name="submit" class="primary-btn">Login</button>
     </form>
     
     <button type="button" class="secondary-btn" onclick="showRegister()">Create Account</button>
