@@ -1,0 +1,6 @@
+U001	Ali Aiman	ali@gmail.com	Maintain Weight
+U002	Siti Humairah	siti@gmail.com	Lose Weight
+U003	Farah Qashrina	farah@gmail.com	Maintain Weight
+U004	Abu Haziq	abu@gmail.com	Lose Weight
+U005	Danie Wong	danie@gmail.com	Gain Weight
+U006	Aisya Zahra	aisya@gmail.com	Gain Weight

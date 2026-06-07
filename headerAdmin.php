@@ -19,7 +19,7 @@
         <a href = "homeAdmin.php"> Home </a > 
         <a href = "listClient.php"> Client </a > 
         <a href = "listCoach.php"> Coach </a > 
-        <a href = "listFood"> Food </a > 
+        <a href = "listFood.php"> Food </a > 
         <a href = "logOut.php"> Log Out </a > 
         </nav>
     </header>
