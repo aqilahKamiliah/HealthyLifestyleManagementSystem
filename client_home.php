@@ -9,7 +9,6 @@
     <link rel="stylesheet" type="text/css" href="style1.css"> 
     
     <style>
-        /* Tetapan Asas Halaman */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #fafafa;
@@ -24,7 +23,6 @@
             padding: 0 20px;
         }
 
-        /* Sistem Grid 3 Kolum */
         .dashboard-grid {
             display: table;
             width: 100%;
@@ -32,34 +30,29 @@
             border-spacing: 20px 0;
             margin-top: 20px;
         }
-
-        /* KOTAK KAD DITUKAR KEPADA HIJAU LEMBUT */
         .dashboard-col {
             display: table-cell;
             vertical-align: top;
-            background-color: #e8f5e9; /* Hijau lembut matching tema asal */
+            background-color: #e8f5e9; 
             border-radius: 12px;
             padding: 25px 20px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
 
-        /* Gaya Tajuk Kad */
         .card-title {
             font-size: 22px;
             font-weight: bold;
-            color: #1b5e20; /* Tulisan hijau gelap */
+            color: #1b5e20; 
             margin-top: 0;
             margin-bottom: 20px;
             text-align: center;
         }
 
-        /* --- KOLUM 1: CARTA KALORI (HIJAU THEME) --- */
         .progress-box {
             position: relative;
             width: 180px;
             height: 180px;
             margin: 0 auto 25px auto;
-            /* Tukar warna chart kepada hijau pekat sistem */
             background: radial-gradient(circle, #e8f5e9 60%, transparent 61%), 
                         conic-gradient(#4caf50 0% 65%, #c8e6c9 65% 100%); 
             border-radius: 50%;
@@ -87,7 +80,6 @@
             font-weight: 500;
         }
 
-        /* Petak Badges Info (Tema Hijau) */
         .stat-badges {
             text-align: center;
         }
@@ -104,9 +96,9 @@
             text-align: center;
         }
 
-        .badge-current { background-color: #4caf50; } /* Hijau Utama */
-        .badge-goal { background-color: #2e7d32; }    /* Hijau Gelap */
-        .badge-remaining { background-color: #81c784; } /* Hijau Terang */
+        .badge-current { background-color: #4caf50; } 
+        .badge-goal { background-color: #2e7d32; }   
+        .badge-remaining { background-color: #81c784; } 
 
         .badge span {
             display: block;
@@ -116,7 +108,6 @@
             opacity: 0.9;
         }
 
-        /* --- KOLUM 2: LOG MAKANAN & TO-DO --- */
         .log-item {
             background-color: #ffffff;
             border-radius: 20px;
@@ -142,7 +133,6 @@
         .log-details b { color: #222; }
         .log-details span { color: #666; float: right; font-size: 12px; margin-top: 2px; }
 
-        /* BUTANG HIJAU TEMA */
         .btn-log-meal {
             display: block;
             width: 80%;
@@ -162,7 +152,6 @@
             background-color: #388e3c;
         }
 
-        /* Senarai To-Do */
         .todo-section {
             border-top: 1px solid #c8e6c9;
             padding-top: 15px;
@@ -179,7 +168,6 @@
 
         .todo-item input { margin-right: 8px; vertical-align: middle; }
 
-        /* --- KOLUM 3: FITNESS & GUIDANCE --- */
         .section-sub-title {
             font-size: 14px;
             font-weight: bold;
@@ -207,7 +195,6 @@
             color: #666;
         }
 
-        /* Kotak Mesej Coach */
         .coach-message {
             background-color: #ffffff;
             border-radius: 8px;
@@ -232,7 +219,6 @@
     
     <div class="dashboard-grid">
         
-        <!-- KOLUM 1: Daily Calories Consumed -->
         <div class="dashboard-col">
             <h3 class="card-title">Daily Calories Consumed</h3>
             
@@ -256,7 +242,6 @@
             </div>
         </div>
 
-        <!-- KOLUM 2: Today's Activity & Log -->
         <div class="dashboard-col">
             <h3 class="card-title" style="text-align: left;">Today's Activity & Log</h3>
             <span style="font-size: 13px; font-weight: bold; color: #555; display:block; margin-bottom: 10px;">Today</span>
@@ -286,8 +271,6 @@
                 <div class="todo-item"><input type="checkbox"> Log Dinner</div>
             </div>
         </div>
-
-        <!-- KOLUM 3: Recommender & Guidance -->
         <div class="dashboard-col">
             <h3 class="card-title" style="text-align: left; font-size: 18px;">Fitness & Exercise Recommender</h3>
             
