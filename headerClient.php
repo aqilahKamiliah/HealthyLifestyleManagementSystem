@@ -20,6 +20,8 @@
     <a href="client_profile.php">Profile</a> |
     <a href="client_log.php">Weight Log</a> |
     <a href="client_suggestions.php">Suggestions</a> |
+    <a href="client_history.php">History</a> |
+    <a href="client_logout.php">Log Out</a> |
         </nav>
     </header>
     
