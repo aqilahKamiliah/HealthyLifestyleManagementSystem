@@ -24,7 +24,7 @@
     <a href="coach_recommendation.php">Recommendation</a> 
     <a href="coach_evaluation.php">Evaluation</a> 
     <a href="coach_history.php">History</a> 
-    <a href="logOut.php">Log Out</a> 
+    <a href="logOutCoach.php">Log Out</a> 
 </nav>
 
 </header>
