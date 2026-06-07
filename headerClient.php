@@ -16,11 +16,10 @@
         </div>
 
         <nav>
-        <a href = "homeAdmin.php"> Home </a > 
-        <a href = "listClient.php"> Client </a > 
-        <a href = "listCoach.php"> Coach </a > 
-        <a href = "listFood"> Food </a > 
-        <a href = "logOut.php"> Log Out </a > 
+        <a href="client_home.php">Home</a> |
+    <a href="client_profile.php">Profile</a> |
+    <a href="client_log.php">Weight Log</a> |
+    <a href="client_suggestions.php">Suggestions</a> |
         </nav>
     </header>
     
