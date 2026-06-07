@@ -125,7 +125,7 @@
     </div>
 
     <div class="form-card">
-        <form action="bio.php" method="POST">
+        <form action="client_home.php" method="POST">
             
             <div class="form-grid">
                 
