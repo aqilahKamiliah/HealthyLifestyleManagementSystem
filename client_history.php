@@ -1,96 +1,73 @@
-<?php include 'headerClient.php'; ?>
+<?php
+include 'connection.php';
+include 'headerClient.php';
+
+$sql = "SELECT * FROM progress ORDER BY date DESC";
+$result = mysqli_query($conn, $sql);
+?>
 
 <div class="history-container">
     <div class="stats">
 
         <div class="card">
-            <h2>Weight Trend (Last 30 days)</h2>
-
-        <div class="chart">
-        Weight Trend Graph
-        </div>
-        </div>
-
-        <div class="card">
-            <h2>AVG Calorie Intake</h2>
+            <h2>Weight Trend</h2>
             <div class="chart">
-                Calorie Intake Chart
+                <?php
+                $trendSql = "SELECT * FROM progress ORDER BY date ASC";
+                $trendResult = mysqli_query($conn, $trendSql);
+
+                if(mysqli_num_rows($trendResult) > 0)
+                {
+                    while($row = mysqli_fetch_assoc($trendResult))
+                    {
+                        echo $row['date'] . " : " . $row['weight'] . " kg<br>";
+                    }
+                }
+                else
+                {
+                    echo "No weight data available.";
+                }
+                ?>
             </div>
         </div>
 
-        <div class="card">
-            <h2>Goal Consistency</h2>
-
-            <div class="circle">
-                25/31
-            </div>
-            <p>On-track Days (This Month)</p>
-            <br>
-            <p>Off-track Days (This Month)</p>
-        </div>
     </div>
 
     <div class="table-section">
-    <div class="table-title">
-        Detailed Log History
+        <div class="table-title">
+            Detailed Progress History
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Weight</th>
+                    <th>Client ID</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <?php
+                if(mysqli_num_rows($result) > 0)
+                {
+                    while($row = mysqli_fetch_assoc($result))
+                    {
+                        echo "<tr>";
+                        echo "<td>" . $row['date'] . "</td>";
+                        echo "<td>" . $row['weight'] . " kg</td>";
+                        echo "<td>" . $row['client_id'] . "</td>";
+                        echo "</tr>";
+                    }
+                }
+                else
+                {
+                    echo "<tr><td colspan='3'>No progress record found.</td></tr>";
+                }
+                ?>
+            </tbody>
+        </table>
     </div>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Kcal In</th>
-                <th>Kcal Out</th>
-                <th>Steps</th>
-                <th>Primary Activity</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>15/04/2026</td>
-                <td>2000</td>
-                <td>1850</td>
-                <td>1500</td>
-                <td>Morning Walk</td>
-                <td>Completed</td>
-            </tr>
-
-            <tr>
-                <td>16/04/2026</td>
-                <td>1850</td>
-                <td>1700</td>
-                <td>1800</td>
-                <td>Running</td>
-                <td>Completed</td>
-            </tr>
-            <tr>
-                <td>17/04/2026</td>
-                <td>2100</td>
-                <td>1900</td>
-                <td>2000</td>
-                <td>Cycling</td>
-                <td>Completed</td>
-            </tr>
-            <tr>
-                <td>18/04/2026</td>
-                <td>1900</td>
-                <td>1700</td>
-                <td>1700</td>
-                <td>Gym Workout</td>
-                <td>Completed</td>
-            </tr>
-            <tr>
-                <td>19/04/2026</td>
-                <td>2000</td>
-                <td>1800</td>
-                <td>2200</td>
-                <td>Walking</td>
-                <td>Completed</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
 </div>
 
 </body>
