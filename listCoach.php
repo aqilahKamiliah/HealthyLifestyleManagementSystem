@@ -9,6 +9,7 @@
 <body>
 <?php 
 include("headerAdmin.php");
+include("connection.php");
 ?>
 
 <div class="page-header">
@@ -17,34 +18,35 @@ include("headerAdmin.php");
 </div>
 
 <?php
-$fp = fopen("coachList.txt", "r") or die("Couldn't open the file");
+// SQL Query joining users and coach tables
+$sql = "SELECT u.user_id, u.name, u.email, c.specialization, c.experience_years 
+        FROM users u 
+        JOIN coach c ON u.user_id = c.user_id";
+$result = mysqli_query($conn, $sql);
 
 #Create table and six headings
-echo "<center><table border ='1' cellspacing ='1' cellpadding='2' valign 'center' width=50% >";
-echo "<tr style ='background: #f5f5f5'>"
-."<th>Name</th>"
-."<th>Email</th>"
-."<th>Phone Number</th>"
-."<th>Specialization</th>"
-."<th>Password</th>"
-."</tr>";
+echo "<center><table border='1' cellspacing='1' cellpadding='2' width='80%'>";
+echo "<tr style='background: #f5f5f5'>
+        <th><center>Name</th>
+        <th><center>Email</th>
+        <th><center>Specialization</th>
+        <th><center>Experience (Years)</th>
+        <th><center>Actions</th>
+      </tr>";
 
-while(!feof($fp))
-	{
-		$data = fgets($fp,1024);
-		$values = chop ($data);
-		$val = explode("\t", $values);
-		echo "<tr><td> " . $val[0] . " </td>";
-		echo "<td align = 'center'>". $val[1] . "</td>";
-		echo "<td align = 'center'>". $val[2] . "</td>";
-		echo "<td align = 'center'>". $val[3] . "</td>";
-		echo "<td align = 'center'>". $val[4] . "</td>";
-		echo "</tr>";
-	}
-	echo "</table></center>";
-
-fclose($fp);
-?> 
-
+while ($row = mysqli_fetch_assoc($result)) {
+    echo "<tr>
+            <td>" . htmlspecialchars($row['name']) . "</td>
+            <td>" . htmlspecialchars($row['email']) . "</td>
+            <td>" . htmlspecialchars($row['specialization']) . "</td>
+            <td align='center'>" . htmlspecialchars($row['experience_years']) . "</td>
+            <td align='center'>
+                <a href='editCoach.php?id=" . $row['user_id'] . "'>Edit</a> | 
+                <a href='deleteCoach.php?id=" . $row['user_id'] . "' onclick='return confirm(\"Are you sure?\")'>Delete</a>
+            </td>
+          </tr>";
+}
+echo "</table></center>";
+?>
 </body>
 </html>
