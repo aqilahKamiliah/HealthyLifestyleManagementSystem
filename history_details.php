@@ -1,6 +1,8 @@
 <?php
-$client = isset($_GET['client']) ? $_GET['client'] : '';
+include 'connection.php';
 include 'headerCoach.php';
+
+$client_id = $_GET['client_id'];
 ?>
 
 <!DOCTYPE html>
@@ -16,42 +18,25 @@ include 'headerCoach.php';
             text-align: center;
         }
 
-        .history-grid {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
-
         .history-box {
-            width: 30%;
-            min-width: 250px;
             border: 1px solid #ddd;
             border-radius: 10px;
             padding: 15px;
-            text-align: left;
+            margin: 15px auto;
+            width: 60%;
             background: #fff;
+            text-align: left;
         }
 
         .meal {
-            border: 1px solid #eee;
-            padding: 6px;
+            padding: 5px;
             margin: 5px 0;
-            border-radius: 6px;
-            font-size: 14px;
+            border-bottom: 1px solid #eee;
         }
 
         .total {
             font-weight: bold;
             margin-top: 10px;
-        }
-
-        .back {
-            display: inline-block;
-            margin-top: 20px;
-            text-decoration: none;
-            color: blue;
         }
     </style>
 </head>
@@ -60,90 +45,40 @@ include 'headerCoach.php';
 
 <div class="container">
 
-<?php if($client == "Ali") { ?>
+<h2>Client History</h2>
 
-    <h2>Ali - History</h2>
+<?php
 
-    <div class="history-grid">
+$sql = "
+    SELECT *
+    FROM Progress
+    WHERE client_id = $client_id
+    ORDER BY date DESC
+";
 
+$result = mysqli_query($conn, $sql);
+
+if (mysqli_num_rows($result) > 0) {
+
+    while($row = mysqli_fetch_assoc($result)) {
+
+        echo '
         <div class="history-box">
-            <h3>12 April 2026</h3>
-            <div class="meal">Breakfast: 500 kcal</div>
-            <div class="meal">Lunch: 800 kcal</div>
-            <div class="meal">Dinner: 885 kcal</div>
-            <div class="meal">Exercise: Cardio 10 min</div>
-            <div class="total">Total: 2185 kcal</div>
+            <h3>Date: '.$row['date'].'</h3>
+            <div class="total">Weight: '.$row['weight'].' kg</div>
         </div>
+        ';
+    }
 
-        <div class="history-box">
-            <h3>13 April 2026</h3>
-            <div class="meal">Breakfast: 467 kcal</div>
-            <div class="meal">Lunch: 863 kcal</div>
-            <div class="meal">Dinner: 796 kcal</div>
-            <div class="meal">Exercise: Planks 5 min</div>
-            <div class="total">Total: 2126 kcal</div>
-        </div>
+} else {
+    echo "<p>No history found for this client.</p>";
+}
 
-        <div class="history-box">
-            <h3>14 April 2026</h3>
-            <div class="meal">Breakfast: 563 kcal</div>
-            <div class="meal">Lunch: 986 kcal</div>
-            <div class="meal">Dinner: 880 kcal</div>
-            <div class="meal">Exercise: Push ups 30</div>
-            <div class="total">Total: 2429 kcal</div>
-        </div>
+?>
 
-    </div>
-
-    <a class="back" href="coach_history.php">← Back</a>
-
-<?php } elseif($client == "Maya") { ?>
-
-    <h2>Maya - History</h2>
-
-    <div class="history-grid">
-
-        <div class="history-box">
-            <h3>13 April 2026</h3>
-            <div class="meal">Breakfast: 700 kcal</div>
-            <div class="meal">Lunch: 900 kcal</div>
-            <div class="meal">Dinner: 1221 kcal</div>
-            <div class="meal">Exercise: Strength 10 min</div>
-            <div class="total">Total: 2821 kcal</div>
-        </div>
-
-    </div>
-
-    <a class="back" href="coach_history.php">← Back</a>
-
-<?php } elseif($client == "Adi") { ?>
-
-    <h2>Adi - History</h2>
-
-    <div class="history-grid">
-
-        <div class="history-box">
-            <h3>14 April 2026</h3>
-            <div class="meal">Breakfast: 600 kcal</div>
-            <div class="meal">Lunch: 850 kcal</div>
-            <div class="meal">Dinner: 700 kcal</div>
-            <div class="meal">Exercise: Gym 20 min</div>
-            <div class="total">Total: 2150 kcal</div>
-        </div>
-
-    </div>
-
-    <a class="back" href="coach_history.php">← Back</a>
-
-<?php } else { ?>
-
-    <h2>No Client Selected</h2>
-    <a class="back" href="coach_history.php">← Back to History</a>
-
-<?php } ?>
+<a href="coach_history.php">← Back</a>
 
 </div>
 
 </body>
 </html>
-
