@@ -1,3 +1,12 @@
+<?php
+include 'connection.php';
+
+$queryClient = mysqli_query($conn, "SELECT COUNT(*) AS total_clients FROM client");
+$dataClient = mysqli_fetch_assoc($queryClient);
+
+$totalClients = $dataClient['total_clients'];
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,13 +24,13 @@
 
         <div style="border:1px solid #ccc; padding:20px; border-radius:15px; width:30%; text-align:center;">
             <h3>Total Clients</h3>
-            <h1>5</h1>
+            <h1><?php echo $totalClients; ?></h1>
             <p>Active Clients</p>
         </div>
 
         <div style="border:1px solid #ccc; padding:20px; border-radius:15px; width:30%; text-align:center;">
             <h3>Upcoming Sessions</h3>
-            <h1>2</h1>
+            <h1>0</h1>
             <p>This Week</p>
         </div>
 
@@ -31,7 +40,7 @@
 
         <div style="border:1px solid #ccc; padding:20px; border-radius:15px; width:30%; text-align:center;">
             <h3>Completed Sessions</h3>
-            <h1>10</h1>
+            <h1>0</h1>
             <p>This Month</p>
         </div>
 

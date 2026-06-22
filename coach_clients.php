@@ -1,3 +1,7 @@
+<?php
+include 'connection.php';
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,10 +17,10 @@
 
 <?php
 if(isset($_GET['name'])) {
+
     $name = $_GET['name'];
 ?>
 
-    <!-- ✅ PAGE DETAIL (Makanan) -->
     <h2><?php echo $name; ?></h2>
 
     <div style="display:flex; justify-content:center; gap:30px; margin-top:30px;">
@@ -46,38 +50,36 @@ if(isset($_GET['name'])) {
 
 <?php
 } else {
+
+    $sql = "SELECT users.name, client.client_id
+            FROM client
+            INNER JOIN users
+            ON client.user_id = users.user_id";
+
+    $result = mysqli_query($conn, $sql);
+
+    echo '<div style="display:flex; gap:20px; flex-wrap:wrap;">';
+
+    while($row = mysqli_fetch_assoc($result)) {
 ?>
 
-    <!-- ✅ PAGE LIST (Client) -->
-    <div style="display:flex; gap:20px;">
+        <a href="coach_clients.php?name=<?php echo $row['name']; ?>"
+           style="text-decoration:none; color:black;">
 
-        <a href="coach_clients.php?name=Ali" style="text-decoration:none; color:black;">
             <div style="border:1px solid #ccc; padding:20px; border-radius:10px; width:200px; cursor:pointer;">
-                <h3>Ali</h3>
-                <p>Goal: Lose weight</p>
-                <p>2185 kcal/day</p>
-            </div>
-        </a>
 
-        <a href="coach_clients.php?name=Maya" style="text-decoration:none; color:black;">
-            <div style="border:1px solid #ccc; padding:20px; border-radius:10px; width:200px; cursor:pointer;">
-                <h3>Maya</h3>
-                <p>Goal: Maintain weight</p>
-                <p>1650 kcal/day</p>
-            </div>
-        </a>
+                <h3><?php echo $row['name']; ?></h3>
 
-        <a href="coach_clients.php?name=Adi" style="text-decoration:none; color:black;">
-            <div style="border:1px solid #ccc; padding:20px; border-radius:10px; width:200px; cursor:pointer;">
-                <h3>Adi</h3>
-                <p>Goal: Gain weight</p>
-                <p>2150 kcal/day</p>
-            </div>
-        </a>
+                <p>Client ID: <?php echo $row['client_id']; ?></p>
 
-    </div>
+            </div>
+
+        </a>
 
 <?php
+    }
+
+    echo '</div>';
 }
 ?>
 

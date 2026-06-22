@@ -1,3 +1,14 @@
+<?php
+include 'connection.php';
+
+$sql = "SELECT users.name, client.client_id
+        FROM client
+        INNER JOIN users
+        ON client.user_id = users.user_id";
+
+$result = mysqli_query($conn, $sql);
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,30 +20,50 @@
 
 <?php include 'headerCoach.php'; ?>
 
-<div style="width:80%; margin:30px auto; display:flex; justify-content:space-around;">
+<div style="width:80%; margin:30px auto; display:flex; gap:20px; flex-wrap:wrap;">
 
-    <!-- ===== CLIENT 1 ===== -->
+<?php while($row = mysqli_fetch_assoc($result)) { ?>
+
     <div style="border:1px solid #ccc; padding:20px; border-radius:10px; width:250px;">
-        
-        <h3>Ali</h3>
-        <p>Goal: Lose weight</p>
-        <p>2185 kcal/day</p>
+
+        <h3><?php echo $row['name']; ?></h3>
+
+        <p>Client ID: <?php echo $row['client_id']; ?></p>
 
         <form>
 
             <p>Rating:</p>
 
-            <input type="radio" name="rating1" value="1"> ★ <br>
-            <input type="radio" name="rating1" value="2"> ★★ <br>
-            <input type="radio" name="rating1" value="3"> ★★★ <br>
-            <input type="radio" name="rating1" value="4"> ★★★★ <br>
-            <input type="radio" name="rating1" value="5"> ★★★★★
+            <input type="radio"
+                   name="rating_<?php echo $row['client_id']; ?>"
+                   value="1"> ★ <br>
+
+            <input type="radio"
+                   name="rating_<?php echo $row['client_id']; ?>"
+                   value="2"> ★★ <br>
+
+            <input type="radio"
+                   name="rating_<?php echo $row['client_id']; ?>"
+                   value="3"> ★★★ <br>
+
+            <input type="radio"
+                   name="rating_<?php echo $row['client_id']; ?>"
+                   value="4"> ★★★★ <br>
+
+            <input type="radio"
+                   name="rating_<?php echo $row['client_id']; ?>"
+                   value="5"> ★★★★★
 
             <p>Comment</p>
-            <textarea placeholder="Description" style="width:100%; height:60px;"></textarea>
+
+            <textarea
+                placeholder="Description"
+                style="width:100%; height:60px;"></textarea>
 
             <br><br>
-            <button type="submit" style="background:#6a5acd; color:white; border:none; padding:8px 15px; border-radius:5px;">
+
+            <button type="submit"
+                    style="background:#6a5acd; color:white; border:none; padding:8px 15px; border-radius:5px;">
                 Submit
             </button>
 
@@ -40,25 +71,9 @@
 
     </div>
 
+<?php } ?>
 
-    <!-- ===== CLIENT 2 ===== -->
-    <div style="border:1px solid #ccc; padding:20px; border-radius:10px; width:250px;">
-        
-        <h3>Maya</h3>
-        <p>Goal: Maintain weight</p>
-        <p>1650 kcal/day</p>
+</div>
 
-        <form>
-
-            <p>Rating:</p>
-
-            <input type="radio" name="rating2" value="1"> ★ <br>
-            <input type="radio" name="rating2" value="2"> ★★ <br>
-            <input type="radio" name="rating2" value="3"> ★★★ <br>
-            <input type="radio" name="rating2" value="4"> ★★★★ <br>
-            <input type="radio" name="rating2" value="5"> ★★★★★
-
-            <p>Comment</p>
-            <textarea placeholder="Description" style="width:100%; height:60px;"></textarea>
-
-            <br><br>
+</body>
+</html>

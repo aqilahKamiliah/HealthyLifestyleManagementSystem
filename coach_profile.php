@@ -1,3 +1,16 @@
+<?php
+include 'connection.php';
+
+$sql = "SELECT users.name, coach.specialization, coach.experience_years
+        FROM coach
+        INNER JOIN users ON coach.user_id = users.user_id
+        WHERE users.role = 'coach'
+        LIMIT 1";
+
+$result = mysqli_query($conn, $sql);
+$row = mysqli_fetch_assoc($result);
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,13 +27,13 @@
     <!-- PROFILE BOX -->
     <div style="border:1px solid #ccc; padding:20px; display:flex; justify-content:space-between; align-items:center;">
         
-        <!-- NAME SAHAJA -->
         <div>
-            <h2 style="margin:0;">Sarah</h2>
+            <h2 style="margin:0;">
+                <?php echo $row['name']; ?>
+            </h2>
             <small>Coach</small>
         </div>
 
-        <!-- EDIT BUTTON -->
         <button style="background:#6a5acd; color:white; border:none; padding:8px 15px; border-radius:5px;">
             Edit
         </button>
@@ -32,17 +45,21 @@
 
         <h3>Biometric Snapshot</h3>
 
-        <p><strong>Full Name:</strong> Sarah</p>
+        <p>
+            <strong>Full Name:</strong>
+            <?php echo $row['name']; ?>
+        </p>
 
-        <p><strong>Specialties :</strong></p>
+        <p><strong>Specialization:</strong></p>
+
         <ul>
-            <li>Weight management (loss/gain)</li>
-            <li>Meal planning & calorie tracking</li>
-            <li>Healthy habit building</li>
-            <li>Lifestyle and fitness support</li>
+            <li><?php echo $row['specialization']; ?></li>
         </ul>
 
-        <p><strong>Coaching Style :</strong> Friendly, supportive, and goal-oriented</p>
+        <p>
+            <strong>Experience Years:</strong>
+            <?php echo $row['experience_years']; ?> Years
+        </p>
 
     </div>
 
