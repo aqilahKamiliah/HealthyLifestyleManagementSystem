@@ -32,7 +32,21 @@
 </head>
 <body>
 
-<?php include 'headerCoach.php'; ?>
+<?php
+include 'connection.php';
+include 'headerCoach.php';
+
+// TEMP coach id (later session)
+$coach_id = 1;
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Recommendation</title>
+    <link rel="stylesheet" type="text/css" href="style1.css">
+</head>
+<body>
 
 <div style="width:80%; margin:30px auto;">
 
@@ -40,45 +54,34 @@
 
 <div style="display:flex; gap:20px; flex-wrap:wrap;">
 
+<?php
 
-   
+$sql = "
+SELECT Client.Client_id, Users.name, Client.weight
+FROM Client
+JOIN Users ON Users.user_id = Client.user_id
+WHERE Client.coach_id = $coach_id
+";
 
+$result = mysqli_query($conn, $sql);
 
-    <!-- CLIENT CARD -->
+while($row = mysqli_fetch_assoc($result)) {
+
+    echo '
     <div style="border:1px solid #ccc; padding:20px; border-radius:10px; width:220px;">
-        <h3>Ali</h3>
-        <p>Goal: Lose Weight</p>
-        <p>2185 kcal/day</p>
+        <h3>'.$row['name'].'</h3>
+        <p>Weight: '.$row['weight'].' kg</p>
 
-        <a class="meal-box" href="recommend_food.php?client=Ali&meal=Breakfast">
-            Breakfast
-        </a>
-        <a class="meal-box" href="recommend_food.php?client=Ali&meal=Lunch">
-            Lunch
-        </a>
-        <a class="meal-box" href="recommend_food.php?client=Ali&meal=Dinner">
-            Dinner
-        </a>
+        <a class="meal-box" href="recommend_food.php?client_id='.$row['Client_id'].'&meal=Breakfast">Breakfast</a>
+        <a class="meal-box" href="recommend_food.php?client_id='.$row['Client_id'].'&meal=Lunch">Lunch</a>
+        <a class="meal-box" href="recommend_food.php?client_id='.$row['Client_id'].'&meal=Dinner">Dinner</a>
     </div>
+    ';
+}
 
-    <div style="border:1px solid #ccc; padding:20px; border-radius:10px; width:220px;">
-        <h3>Maya</h3>
-        <p>Goal: Maintain Weight</p>
-        <p>1650 kcal/day</p>
-
-        <a class="meal-box" href="recommend_food.php?client=Maya&meal=Breakfast">
-            Breakfast
-        </a>
-        <a class="meal-box" href="recommend_food.php?client=Maya&meal=Lunch">
-            Lunch
-        </a>
-        <a class="meal-box" href="recommend_food.php?client=Maya&meal=Dinner">
-            Dinner
-        </a>
-    </div>
+?>
 
 </div>
-
 </div>
 
 </body>
