@@ -13,15 +13,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $activity = $_POST['activity_level'];
 
     // Simpan ke dalam database
-    $query = "INSERT INTO Client (user_id, age, gender, height, weight, activity_level) 
-              VALUES ('$user_id', '$age', '$gender', '$height', '$weight', '$activity')";
+    // Contoh jika mahu kemaskini rekod sedia ada (Update)
+$sql = "UPDATE Client SET 
+        age = '$age', 
+        gender = '$gender', 
+        weight = '$weight', 
+        height = '$height' 
+        WHERE user_id = '$user_id'";
 
-    if (mysqli_query($conn, $query)) {
-        // Berjaya, bawa ke profil
-        header("Location: client_profile.php");
-        exit();
-    } else {
-        echo "Ralat: " . mysqli_error($conn);
-    }
+    if (mysqli_query($conn, $sql)) {
+    // Jika berjaya, terus bawa ke profil
+    header("Location: client_profile.php");
+}
 }
 ?>

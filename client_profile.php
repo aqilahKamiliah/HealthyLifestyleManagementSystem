@@ -1,54 +1,31 @@
 <?php
+// Pastikan anda sudah ada connection.php
+include 'connection.php'; 
+
+// 1. Dapatkan user_id dari session (pastikan session_start() sudah ada)
 session_start();
-include 'connection.php';
+$user_id = $_SESSION['user_id']; 
 
-if (!isset($_SESSION['user_id'])) {
-    header("Location: index.php");
-    exit();
+echo "ID Pengguna yang sedang login: " . $_SESSION['user_id'];
+$query = "SELECT * FROM Client WHERE user_id = '$user_id'";
+$result = mysqli_query($conn, $query);
+$data = mysqli_fetch_assoc($result);
+
+// 3. Jika data ditemui, masukkan ke dalam variable
+$nama = isset($data['username']) ? $data['username'] : "User";
+$age = $data['age'] ?? '-';
+$gender = $data['gender'] ?? '-';
+$weight = $data['weight'] ?? '0';
+$height = $data['height'] ?? '0';
+// Kira BMI ringkas
+$bmi = "-";
+if ($weight > 0 && $height > 0) {
+    $bmi = round($weight / (($height/100) * ($height/100)), 1);
 }
-
-$user_id = $_SESSION['user_id'];
-
-// 1. Ambil Nama User dari table 'User' (Berasingan)
-$query_user = "SELECT username FROM User WHERE user_id = '$user_id'";
-$res_user = mysqli_query($conn, $query_user);
-
-// SEMAKAN PENTING:
-if ($res_user) {
-    $row_u = mysqli_fetch_assoc($res_user);
-    $nama_user = ($row_u) ? $row_u['username'] : "Standard User";
-} else {
-    $nama_user = "Standard User"; // Fallback jika query gagal
-}
-
-// 2. Ambil data Client (Data BMI, berat, dll)
-$query_client = "SELECT * FROM Client WHERE user_id = '$user_id' ORDER BY client_id DESC LIMIT 1";
-$res_client = mysqli_query($conn, $query_client);
-$data = mysqli_fetch_assoc($res_client);
-echo "<pre>";
-print_r($data);
-echo "</pre>";
-// Default values
-$age = "-"; $gender = "-"; $weight = "-"; $height = "-"; $bmi = "0.0"; $status = "No Data";
-
-// 3. Masukkan data jika wujud
-if ($data) {
-    $age = $data['age'];
-    $gender = $data['gender'];
-    $weight = $data['weight'];
-    $height = $data['height'];
-    
-    $h_m = $height / 100;
-    if ($h_m > 0) {
-        $bmi_val = $weight / ($h_m * $h_m);
-        $bmi = round($bmi_val, 1);
-        if ($bmi < 18.5) $status = "Underweight";
-        else if ($bmi < 25) $status = "Normal";
-        else $status = "Overweight";
-    }
-}
-include 'headerClient.php'; 
 ?>
+
+<?php include 'headerClient.php'; ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -268,13 +245,13 @@ include 'headerClient.php';
         <div class="user-meta">
             <div class="avatar-circle">👤</div>
             <div class="user-name-title">
-                <h2><?php echo $nama_user; ?></h2> <!-- Sekarang dia akan panggil pembolehubah tadi -->
-    <span>Standard User</span>
+                <h2>Ali</h2>
+                <span>Standard User</span>
             </div>
         </div>
         <div class="bmi-score-box">
-            <h3>BMI : <?php echo $bmi; ?></h3>
-    <span><?php echo $status; ?></span>
+            <h3>BMI : 29.4</h3>
+            <span>Overweight</span>
         </div>
     </div>
 
@@ -286,9 +263,9 @@ include 'headerClient.php';
             <h3>Biometric Snapshot</h3>
             <table class="snapshot-table">
                 <tr><td>Age :</td><td><?php echo $age; ?></td></tr>
-    <tr><td>Gender :</td><td><?php echo $gender; ?></td></tr>
-    <tr><td>Current Weight :</td><td><?php echo $weight; ?> kg</td></tr>
-    <tr><td>Height :</td><td><?php echo $height; ?> cm</td></tr>
+<tr><td>Gender :</td><td><?php echo $gender; ?></td></tr>
+<tr><td>Current Weight :</td><td><?php echo $weight; ?> kg</td></tr>
+<tr><td>Height :</td><td><?php echo $height; ?> cm</td></tr>
             </table>
         </div>
 
