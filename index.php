@@ -1,3 +1,39 @@
+<?php
+session_start();
+
+if(isset($_POST['submit']))
+{
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    if($email == "client@gmail.com" && $password == "1234")
+    {
+        header("Location: client_bio.php");
+        exit();
+    }
+
+    else if($email == "coach@gmail.com" && $password == "1234")
+    {
+        header("Location: coach_home.php");
+        exit();
+    }
+
+    else if($email == "admin@gmail.com" && $password == "1234")
+    {
+        header("Location: homeAdmin.php");
+        exit();
+    }
+
+    else
+    {
+        echo "<script>
+                alert('Invalid email or password');
+                window.location.href='index.php';
+              </script>";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,20 +55,22 @@
 <div id="loginForm" class="form-container">
     <h2>Login</h2>
 
-    <input type="email" placeholder="Enter your email">
-    <input type="password" placeholder="Enter your password">
+    <form action="index.php" method="POST">
+    <input type="email" name="email" placeholder="Enter your email" required>
+    <input type="password" name="password" placeholder="Enter your password" required>
 
-    <button class="primary-btn">Login</button>
-
-    <button class="secondary-btn" onclick="showRegister()">Create Account</button>
+    <button type="submit" name="submit" class="primary-btn">Login</button>
+    </form>
+    
+    <button type="button" class="secondary-btn" onclick="showRegister()">Create Account</button>
 </div>
 
 <div id="registerForm" class="form-container">
     <h2>Create Account</h2>
 
-    <input type="text" placeholder="Enter your full name">
-    <input type="email" placeholder="Enter your email">
-    <input type="password" placeholder="Create password">
+    <input type="text" placeholder="Enter your full name" required>
+    <input type="email" placeholder="Enter your email" required>
+    <input type="password" placeholder="Create password" required>
 
     <button onclick="registerSuccess()">Register</button>
 
