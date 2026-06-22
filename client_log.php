@@ -1,5 +1,9 @@
+<<<<<<< HEAD
+<?php include 'headerClient.php'; ?>
+=======
 <?php include 'headerClient.php'; 
 ?>
+>>>>>>> b9a38c4d7837720804f16ad179650b89141f5b26
 
 <!DOCTYPE html>
 <html lang="en">
