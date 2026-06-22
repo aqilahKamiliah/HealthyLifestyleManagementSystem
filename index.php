@@ -1,31 +1,47 @@
 <?php
 session_start();
+// 1. Panggil sambungan database korang
+include 'connection.php';
 
 if(isset($_POST['submit']))
 {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    if($email == "client@gmail.com" && $password == "1234")
-    {
-        header("Location: client_bio.php");
-        exit();
-    }
+    // 2. Buat query SQL untuk cari user berdasarkan email & password yang ditaip
+    $query = "SELECT * FROM Users WHERE email = '$email' AND password = '$password'";
+    $result = mysqli_query($conn, $query);
 
-    else if($email == "coach@gmail.com" && $password == "1234")
+    // Jika user dijumpai dalam database
+    if(mysqli_num_rows($result) > 0)
     {
-        header("Location: coach_home.php");
-        exit();
-    }
+        $row = mysqli_fetch_assoc($result);
 
-    else if($email == "admin@gmail.com" && $password == "1234")
-    {
-        header("Location: homeAdmin.php");
-        exit();
-    }
+        // 3. SIMPAN DATA DALAM SESSION (Penting untuk sekatan Shana & guna di client_home)
+        $_SESSION['user_id'] = $row['user_id']; // Ambil 'user_id' dari database (cth: Ali = 2)
+        $_SESSION['name'] = $row['name'];
+        $_SESSION['role'] = $row['role']; // Ambil 'client', 'coach', atau 'admin'
 
+        // 4. Hantar pengguna ke halaman utama mengikut 'role' masing-masing
+        if($row['role'] == 'client')
+        {
+            header("Location: client_bio.php");
+            exit();
+        }
+        else if($row['role'] == 'coach')
+        {
+            header("Location: coach_home.php");
+            exit();
+        }
+        else if($row['role'] == 'admin')
+        {
+            header("Location: homeAdmin.php");
+            exit();
+        }
+    }
     else
     {
+        // Jika data tiada atau salah taip
         echo "<script>
                 alert('Invalid email or password');
                 window.location.href='index.php';
