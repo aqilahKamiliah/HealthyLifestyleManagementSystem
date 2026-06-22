@@ -1,4 +1,5 @@
-<?php include 'headerClient.php'; ?>
+<?php include 'headerClient.php'; 
+include 'connection.php';?>
 
 <!DOCTYPE html>
 <html lang="en">
