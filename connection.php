@@ -5,7 +5,7 @@ $conn = mysqli_connect(
     "root",
     "",
     "healthy_lifestyle_db",
-    3306
+    3301
 );
 
 if (!$conn) {

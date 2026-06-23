@@ -9,6 +9,7 @@
 <body>
 <?php 
 include("headerAdmin.php");
+include("connection.php");
 ?>
 
 <div class="page-header">
@@ -16,32 +17,44 @@ include("headerAdmin.php");
 </div>
 
 <?php
-$fp = fopen("clientList.txt", "r") or die("Couldn't open the file");
+// SQL query joining users and client tables to show all registered clients
+$sql = "SELECT u.user_id, u.name, u.email, c.goal, c.age, c.gender, c.height, c.weight 
+        FROM users u 
+        INNER JOIN client c ON u.user_id = c.user_id";
 
-#Create table and six headings
-echo "<center><table border ='1' cellspacing ='1' cellpadding='2' valign 'center' width=50% >";
-echo "<tr style ='background: #f5f5f5'>"
-."<th>User ID</th>"
-."<th>Name</th>"
-."<th>Email</th>"
-."<th>Goal</th>"
-."</tr>";
+$result = mysqli_query($conn, $sql);
 
-while(!feof($fp))
-	{
-		$data = fgets($fp,1024);
-		$values = chop ($data);
-		$val = explode("\t", $values);
-		echo "<tr><td> " . $val[0] . " </td>";
-		echo "<td align = 'center'>". $val[1] . "</td>";
-		echo "<td align = 'center'>". $val[2] . "</td>";
-		echo "<td align = 'center'>". $val[3] . "</td>";
-		echo "</tr>";
-	}
-	echo "</table></center>";
+if (!$result) {
+    die("Query failed: " . mysqli_error($conn));
+}
 
-fclose($fp);
-?> 
+# Create table with expanded headings to show more data from the database
+echo "<center><table border='1' cellspacing='1' cellpadding='5' width='90%'>";
+echo "<tr style='background: #f5f5f5'>
+        <th><center>User ID</th>
+        <th><center>Name</th>
+        <th><center>Email</th>
+        <th><center>Age</th>
+        <th><center>Gender</th>
+        <th><center>Height (cm)</th>
+        <th><center>Weight (kg)</th>
+        <th><center>Goal</th>
+      </tr>";
+
+while ($row = mysqli_fetch_assoc($result)) {
+    echo "<tr>
+            <td align='center'>" . htmlspecialchars($row['user_id']) . "</td>
+            <td align='center'>" . htmlspecialchars($row['name']) . "</td>
+            <td align='center'>" . htmlspecialchars($row['email']) . "</td>
+            <td align='center'>" . htmlspecialchars($row['age']) . "</td>
+            <td align='center'>" . htmlspecialchars($row['gender']) . "</td>
+            <td align='center'>" . htmlspecialchars($row['height']) . "</td>
+            <td align='center'>" . htmlspecialchars($row['weight']) . "</td>
+            <td align='center'>" . htmlspecialchars($row['goal']) . "</td>
+          </tr>";
+}
+echo "</table></center>";
+?>
 
 </body>
 </html>

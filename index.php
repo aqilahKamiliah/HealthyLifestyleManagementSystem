@@ -7,26 +7,31 @@ if(isset($_POST['submit']))
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    $sql = "SELECT * FROM users 
-            WHERE email = '$email' 
-            AND password = '$password'";
-
-    $result = mysqli_query($conn, $sql);
-
-    if(mysqli_num_rows($result) == 1)
+    $query = "SELECT * FROM Users WHERE email = '$email' AND password = '$password'";
+    $result = mysqli_query($conn, $query);
+    if(mysqli_num_rows($result) > 0)
     {
         $row = mysqli_fetch_assoc($result);
-
-        $_SESSION['user_id'] = $row['user_id'];
+        $_SESSION['user_id'] = $row['user_id']; 
         $_SESSION['name'] = $row['name'];
-        $_SESSION['email'] = $row['email'];
-        $_SESSION['role'] = $row['role'];
+        $_SESSION['role'] = $row['role']; 
 
         if($row['role'] == 'client')
-        {
-            header("Location: client_bio.php");
-            exit();
-        }
+{
+    $user_id = $row['user_id'];
+    $check_query = "SELECT * FROM client WHERE user_id = '$user_id'";
+    $check_result = mysqli_query($conn, $check_query);
+
+    if(mysqli_num_rows($check_result) > 0)
+    {
+        header("Location: client_profile.php");
+    }
+    else
+    {
+        header("Location: client_bio.php");
+    }
+    exit();
+}
         else if($row['role'] == 'coach')
         {
             header("Location: coach_home.php");
@@ -37,26 +42,6 @@ if(isset($_POST['submit']))
             header("Location: homeAdmin.php");
             exit();
         }
-    }
-    else
-    {
-        echo "<script>alert('Invalid email or password');</script>";
-    }
-}
-
-if(isset($_POST['register']))
-{
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $role = "client";
-
-    $check = "SELECT * FROM users WHERE email = '$email'";
-    $checkResult = mysqli_query($conn, $check);
-
-    if(mysqli_num_rows($checkResult) > 0)
-    {
-        echo "<script>alert('Email already exists!');</script>";
     }
     else
     {
@@ -112,13 +97,13 @@ if(isset($_POST['register']))
 <div id="registerForm" class="form-container">
     <h2>Create Account</h2>
 
-    <form action="index.php" method="POST">
-        <input type="text" name="name" placeholder="Enter your full name" required>
+    <form action="process_register.php" method="POST">
+        <input type="text" name="fullname" placeholder="Enter your full name" required>
         <input type="email" name="email" placeholder="Enter your email" required>
         <input type="password" name="password" placeholder="Create password" required>
-
         <button type="submit" name="register">Register</button>
     </form>
+
 
     <button type="button" class="secondary-btn" onclick="showLogin()">Cancel</button>
 </div>
