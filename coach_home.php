@@ -1,7 +1,27 @@
 <?php
+session_start();
 include 'connection.php';
 
-$queryClient = mysqli_query($conn, "SELECT COUNT(*) AS total_clients FROM client");
+$user_id = $_SESSION['user_id'];
+
+/* Ambil coach_id berdasarkan user yang login */
+$coachQuery = "SELECT coach_id
+               FROM coach
+               WHERE user_id = '$user_id'";
+
+$coachResult = mysqli_query($conn, $coachQuery);
+$coachData = mysqli_fetch_assoc($coachResult);
+
+$coach_id = $coachData['coach_id'];
+
+/* Kira jumlah client bawah coach tersebut */
+$queryClient = mysqli_query(
+    $conn,
+    "SELECT COUNT(*) AS total_clients
+     FROM client
+     WHERE coach_id = '$coach_id'"
+);
+
 $dataClient = mysqli_fetch_assoc($queryClient);
 
 $totalClients = $dataClient['total_clients'];
