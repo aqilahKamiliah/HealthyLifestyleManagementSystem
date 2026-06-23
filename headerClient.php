@@ -25,4 +25,7 @@
     <a href="client_coach_page1.php">Coach</a>
     <a href="logOutClient.php">Logout</a>
     </nav>
-    </header>
+</header>
+
+</body>
+</html>
