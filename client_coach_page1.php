@@ -1,95 +1,49 @@
-<?php include 'headerClient.php'; ?>
+<?php
+include 'connection.php';
+include 'headerClient.php';
+
+$sql = "SELECT coach.coach_id, coach.specialization, coach.experience_years, users.name
+        FROM coach, users
+        WHERE coach.user_id = users.user_id
+        AND users.role = 'coach'";
+
+$result = mysqli_query($conn, $sql);
+?>
 
 <h2 class="coach-title">Choose a coach that fits your goals</h2>
+
 <div class="coach-container">
-    
-    <div class="coach-card">
-        <div class="avatar"></div>
-        <h3>Sarah</h3>
-        
-        <p>
-            Weight Management,
-            Meal Planning,
-            Calorie Tracking
-        </p>
 
-        <a href="client_coach_page2.php?coach=Sarah">
-            <button>Choose Coach</button>
-        </a>
-    </div>
-    <div class="coach-card">
-        <div class="avatar"></div>
-        <h3>Maria</h3>
-        
-        <p>
-            Stress Management,
-            Flexibility & Mobility,
-            Mindfulness & Meditation
-        </p>
+<?php
+if(mysqli_num_rows($result) > 0)
+{
+    while($row = mysqli_fetch_assoc($result))
+    {
+?>
+        <div class="coach-card">
+            <div class="avatar"></div>
 
-        <a href="client_coach_page2.php?coach=Maria">
-            <button>Choose Coach</button>
-        </a>        
-    </div>
+            <h3><?php echo $row['name']; ?></h3>
 
-     <div class="coach-card">
-        <div class="avatar"></div>
-        <h3>Aaron</h3>
-        
-        <p>
-            Muscle Building & Toning,
-            Resistance Trainning,
-            Athletic Performance
-        </p>
+            <p>
+                Specialization: <?php echo $row['specialization']; ?><br>
+                Experience: <?php echo $row['experience_years']; ?> years
+            </p>
 
-        <a href="client_coach_page2.php?coach=Aaron">
-            <button>Choose Coach</button>
-        </a>
-    </div>
-    <div class="coach-card">
-        <div class="avatar"></div>
-        <h3>Faeeq</h3>
-        
-        <p>
-            Running & Cycling prep,
-            Cardiovascular health,
-            Stamina Building.
-        </p>
+            <a href="client_coach_page2.php?coach_id=<?php echo $row['coach_id']; ?>">
+                <button>Choose Coach</button>
+            </a>
+        </div>
+<?php
+    }
+}
+else
+{
+    echo "<p>No coach available.</p>";
+}
+?>
 
-        <a href="client_coach_page2.php?coach=Faeeq">
-            <button>Choose Coach</button>
-        </a>
-    </div>
-    
-    <div class="coach-card">
-        <div class="avatar"></div>
-        <h3>Jack</h3>
-        
-        <p>
-            Rapid Fat Loss,
-            Lean Muscle Gain,
-            Metabolic Optimization
-        </p>
-
-        <a href="client_coach_page2.php?coach=Jack">
-            <button>Choose Coach</button>
-        </a>
-    </div>
-
-    <div class="coach-card">
-        <div class="avatar"></div>
-        <h3>Sofee</h3>
-        
-        <p>
-            Healthy Weight Loss,
-            Hormonal Friendly Dieting,
-            Body Recomposition
-        </p>
-
-        <a href="client_coach_page2.php?coach=Sofee">
-            <button>Choose Coach</button>
-        </a>
-    </div>
 </div>
+
 </body>
 </html>
