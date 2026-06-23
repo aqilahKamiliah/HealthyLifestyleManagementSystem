@@ -7,35 +7,49 @@
     <link rel="stylesheet" type="text/css" href="styleAdmin.css">
 </head>
 <body>
-<?php include("headerAdmin.php");
+<?php 
+include("headerAdmin.php");
+include("connection.php");
 
-	$myTextFile = 'coachList.txt';
-    if(isset($_POST['submit'])) {
+	if(isset($_POST['submit'])) {
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+    $specialization = $_POST['specialization'];
+    $experience = (int)$_POST['experience']; 
+    $password = $_POST['password'];
+    $confirmPassword = $_POST['confirmPassword'];
 
-    $password = $_POST["password"];
-    $confirmPassword = $_POST["confirmPassword"];
+    // 1. Check if passwords match
+    if($password !== $confirmPassword) {
+        echo "<script>alert('Passwords do not match!');</script>";
+    } 
+    // 2. Check if email already exists
+    else {
+        $checkEmail = "SELECT email FROM users WHERE email = '$email'";
+        $result = mysqli_query($conn, $checkEmail);
+        
+        if(mysqli_num_rows($result) > 0) {
+            echo "<script>alert('This email is already registered!');</script>";
+        } else {
+            // 3. Proceed with registration
+            $sqlUser = "INSERT INTO users (name, email, password, role) VALUES ('$name', '$email', '$password', 'coach')";
+            
+            if(mysqli_query($conn, $sqlUser)) {
+                $newUserId = mysqli_insert_id($conn);
 
-    if($password == $confirmPassword)
-    {
-        echo "Password matched!";
+                $sqlCoach = "INSERT INTO coach (specialization, experience_years, user_id) VALUES ('$specialization', '$experience', '$newUserId')";
+                
+                if(mysqli_query($conn, $sqlCoach)) {
+                    echo "<script>alert('Coach registered successfully!');</script>";
+                } else {
+                    echo "<script>alert('Error adding coach profile!');</script>";
+                }
+            } else {
+                echo "Error adding user: " . mysqli_error($conn);
+            }
+        }
     }
-    else
-    {
-        echo "Passwords do not match!";
-    }
-	
-	$data = array($_POST['name'],$_POST['email'],$_POST['phone'],$_POST['specialization'], $_POST['password']);
-
-	$fp = @fopen($myTextFile, 'a') 
-	or die("Couldn't open file 	for writing!");
-
-	@fwrite($fp, "\n");
-	foreach ($data as $v) {
-		@fwrite($fp, "$v\t");
-	}
-	
-	@fclose($fp);
-    }
+}
 ?>
 
 <section>
@@ -51,11 +65,11 @@
 <tr>	<td>Email</td> 	
 <td> <input type = "text" name = "email" /></td>
 </tr> 
-<tr>	<td>Phone Number</td>
-<td><input type = "text" name = "phone" /></td>	
+<tr>	<td>Specialization</td>
+<td><input type = "text" name = "specialization" /></td>	
 </tr>
-<tr>    <td>Specialization</td>
-<td><input type = "text" name = "specialization" /></td>
+<tr>    <td>Experience (Years)</td>
+<td><input type = "number" name = "experience" /></td>
 </tr>
 <tr>	<td>Password</td>
 <td><input type = "password" name = "password" /></td>
