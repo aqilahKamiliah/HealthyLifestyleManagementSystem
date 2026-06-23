@@ -1,5 +1,20 @@
-<?php include 'headerClient.php'; 
-include 'connection.php';?>
+<?php
+session_start();
+include 'connection.php';
+include 'headerClient.php';
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: index.php");
+    exit();
+}
+
+$user_id = $_SESSION['user_id'];
+
+$sqlClient = "SELECT Client_id FROM Client WHERE user_id = '$user_id'";
+$resultClient = mysqli_query($conn, $sqlClient);
+$rowClient = mysqli_fetch_assoc($resultClient);
+$client_id = $rowClient['Client_id'];
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -95,20 +110,44 @@ include 'connection.php';?>
             <h2>Meal Suggestions</h2>
             <div class="sub-title">Today's Lunch</div>
             
-            <div class="suggestion-item-box">
-                <div class="item-icon-box">─</div>
-                <span>Grilled Chicken Salad</span>
-            </div>
+            <?php
+$sql = "
+SELECT 
+    food.food_name,
+    food.calorie,
+    recommendation.type
+FROM recommendation
+JOIN recommendation_food 
+    ON recommendation.rec_id = recommendation_food.rec_id
+JOIN food 
+    ON recommendation_food.food_id = food.food_id
+WHERE recommendation.client_id = '$client_id'
+ORDER BY recommendation.rec_id DESC
+";
 
-            <div class="suggestion-item-box">
-                <div class="item-icon-box">─</div>
-                <span>Tuna Stuffed Avocado</span>
-            </div>
+$result = mysqli_query($conn, $sql);
 
-            <div class="suggestion-item-box">
-                <div class="item-icon-box">─</div>
-                <span>Berry Smoothie</span>
-            </div>
+if (mysqli_num_rows($result) > 0) {
+    while($row = mysqli_fetch_assoc($result)) {
+?>
+
+<div class="suggestion-item-box">
+    <div class="item-icon-box">─</div>
+    <span>
+        <?= $row['food_name']; ?>
+        <br>
+        <span style="font-size: 16px; font-weight: normal; color: #444;">
+            <?= $row['calorie']; ?> kcal
+        </span>
+    </span>
+</div>
+
+<?php
+    }
+} else {
+    echo "<p>No meal suggestions yet.</p>";
+}
+?>
         </div>
 
         <div class="suggestion-col-card">

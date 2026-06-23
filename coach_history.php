@@ -71,11 +71,12 @@ $coach_id = $coach['coach_id'];
 
 <body>
 
-<div class="container">
+<div class="container" >
 
-<h2>Coach History</h2>
-<p>Select a client to view history</p>
-
+<div style="text-align:center; margin-bottom:30px;">
+    <h2 style="margin-bottom:5px;">Coach History</h2>
+    <p style="color:gray;">Select a client to view their food logs</p>
+</div>
 <div class="client-grid">
 
 <?php
@@ -114,6 +115,7 @@ while($row = mysqli_fetch_assoc($result))
 </div>
 
 </div>
+
 
 </body>
 </html>

@@ -3,19 +3,13 @@ session_start();
 include 'connection.php';
 include 'headerCoach.php';
 
-/* =========================
-   GET CLIENT ID
-========================= */
-if(!isset($_GET['client_id']))
-{
+if(!isset($_GET['client_id'])) {
     die("No client selected.");
 }
 
 $client_id = $_GET['client_id'];
 
-/* =========================
-   GET CLIENT INFO
-========================= */
+/* CLIENT INFO */
 $sqlClient = "
 SELECT Users.name, Client.goal
 FROM Client
@@ -24,12 +18,6 @@ WHERE Client.Client_id = $client_id
 ";
 
 $resultClient = mysqli_query($conn, $sqlClient);
-
-if(!$resultClient || mysqli_num_rows($resultClient) == 0)
-{
-    die("Client not found.");
-}
-
 $client = mysqli_fetch_assoc($resultClient);
 ?>
 
@@ -37,29 +25,74 @@ $client = mysqli_fetch_assoc($resultClient);
 <html>
 <head>
     <title>Client History</title>
-    <link rel="stylesheet" href="style1.css">
 
     <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
         .container {
             width: 80%;
-            margin: 30px auto;
+            margin: auto;
+            padding: 20px 0;
         }
 
-        .box {
-            border: 1px solid #ccc;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 10px;
-            background: #fff;
+        /* HEADER */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
         }
 
-        .title {
-            margin-bottom: 20px;
+        .header h2 {
+            margin-bottom: 5px;
+            font-size: 28px;
         }
 
-        .meal {
+        .header p {
+            color: #666;
+        }
+
+        /* DATE CARD */
+        .date-section {
+            margin-bottom: 25px;
+        }
+
+        .date-title {
+            font-size: 18px;
             font-weight: bold;
+            color: #2e7d32;
+            margin-bottom: 10px;
         }
+
+        /* MEAL CARD */
+        .meal-box {
+            background: #fff;
+            border-radius: 12px;
+            padding: 15px 18px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 4px solid #4caf50;
+        }
+
+        .meal-type {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .food {
+            color: #555;
+            margin-bottom: 3px;
+        }
+
+        .calorie {
+            color: #777;
+            font-size: 14px;
+        }
+
     </style>
 </head>
 
@@ -67,46 +100,58 @@ $client = mysqli_fetch_assoc($resultClient);
 
 <div class="container">
 
-<div class="title">
-    <h2><?php echo $client['name']; ?> - History</h2>
-    <p><b>Goal:</b> <?php echo $client['goal']; ?></p>
-</div>
+    <div class="header">
+        <h2><?php echo $client['name']; ?> - Food History</h2>
+        <p><b>Goal:</b> <?php echo $client['goal']; ?></p>
+    </div>
 
 <?php
-/* =========================
-   GET FOOD LOGS
-========================= */
 $sql = "
 SELECT *
-FROM Food_Logs
+FROM food_logs
 WHERE client_id = $client_id
-ORDER BY date DESC
+ORDER BY date DESC, meal_type
 ";
 
 $result = mysqli_query($conn, $sql);
 
-if(!$result)
-{
-    die("SQL Error: " . mysqli_error($conn));
+if(mysqli_num_rows($result) == 0) {
+    echo "<p style='text-align:center;'>No food logs yet.</p>";
 }
+else {
 
-if(mysqli_num_rows($result) == 0)
-{
-    echo "<p>No food logs yet for this client.</p>";
-}
-else
-{
-    while($row = mysqli_fetch_assoc($result))
-    {
+    $currentDate = "";
+
+    while($row = mysqli_fetch_assoc($result)) {
+
+        // NEW DATE HEADER
+        if($currentDate != $row['date']) {
+
+            // close previous section (just visual separation)
+            if($currentDate != "") {
+                echo "</div>";
+            }
+
+            $currentDate = $row['date'];
+
+            echo "
+            <div class='date-section'>
+                <div class='date-title'> {$currentDate}</div>
+            ";
+        }
+
+        // MEAL CARD
         echo "
-        <div class='box'>
-            <div><b>Date:</b> {$row['date']}</div>
-            <div class='meal'>Meal: {$row['meal_type']}</div>
-            <div>Food: {$row['food_names']}</div>
-            <div>Calories: {$row['calorie']} kcal</div>
+        <div class='meal-box'>
+            <div class='meal-type'> {$row['meal_type']}</div>
+            <div class='food'>Food: {$row['food_names']}</div>
+            <div class='calorie'>Calories: {$row['calorie']} kcal</div>
         </div>
         ";
     }
+
+    // close last section
+    echo "</div>";
 }
 ?>
 

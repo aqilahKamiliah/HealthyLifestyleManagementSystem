@@ -2,25 +2,48 @@
 session_start();
 include 'connection.php'; 
 
+
 if (!isset($_SESSION['user_id'])) {
     header("Location: index.php");
     exit();
 }
 
 $user_id = $_SESSION['user_id'];
+
+// 1. Ambil nama user
 $user_query = "SELECT name FROM users WHERE user_id = '$user_id'";
 $user_result = mysqli_query($conn, $user_query);
 $user_data = mysqli_fetch_assoc($user_result);
 $display_name = $user_data['name'] ?? "User";
-$client_query = "SELECT * FROM client WHERE user_id = '$user_id'";
+
+// 2. Ambil data client DAN coach
+$client_query = "SELECT c.*, co.specialization, u.name as coach_name 
+                 FROM client c 
+                 LEFT JOIN coach co ON c.coach_id = co.coach_id 
+                 LEFT JOIN users u ON co.user_id = u.user_id 
+                 WHERE c.user_id = '$user_id'";
+
 $client_result = mysqli_query($conn, $client_query);
-$data = mysqli_fetch_assoc($client_result);
+$data = mysqli_fetch_assoc($client_result); 
 
-$age     = $data['age'] ?? "-";
-$gender  = $data['gender'] ?? "-";
-$weight  = $data['weight'] ?? "0";
-$height  = $data['height'] ?? "0";
+// --- DEBUG: Semak jika data dijumpai ---
+if (!$data) {
+    // Jika tiada data, tetapkan nilai default
+    $age = $gender = "-";
+    $weight = $height = "0";
+    $coach_name = "Tiada Coach";
+    $coach_spec = "N/A";
+} else {
+    // Jika data wujud, masukkan ke dalam variabel
+    $age     = $data['age'];
+    $gender  = $data['gender'];
+    $weight  = $data['weight'];
+    $height  = $data['height'];
+    $coach_name = $data['coach_name'] ?? "Tiada Coach";
+    $coach_spec = $data['specialization'] ?? "N/A";
+}
 
+// Pengiraan BMI
 $bmi = "-";
 $bmi_status = "-";
 if ($weight > 0 && $height > 0) {
@@ -281,13 +304,13 @@ if ($weight > 0 && $height > 0) {
             </div>
         </div>
     </div> <div class="green-card coach-footer-card">
-        <div class="avatar-circle" style="width: 45px; height: 45px; font-size: 22px;">👤</div>
-        <div class="coach-meta-text">
-            <span>Your Coach :</span><br>
-            <b>Sarah</b>
-            <span class="cert-tag">( Certified Nutritionist )</span>
-        </div>
+    <div class="avatar-circle" style="width: 45px; height: 45px; font-size: 22px;">👤</div>
+    <div class="coach-meta-text">
+        <span>Your Coach :</span><br>
+        <b><?php echo htmlspecialchars($coach_name); ?></b>
+        <span class="cert-tag">( <?php echo htmlspecialchars($coach_spec); ?> )</span>
     </div>
+</div>
 
 </div>
 
