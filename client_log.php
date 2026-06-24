@@ -152,9 +152,11 @@
                     <input type="text" name="food_item" placeholder="e.g. Nasi Lemak" required>
                 </div>
 
+            
+
                 <div class="log-group">
-                    <label>Weight (g) / Unit</label>
-                    <input type="text" name="food_weight" placeholder="Text / Unit" required>
+                    <label>Calories (kcal)</label>
+                    <input type="number" name="calorie" placeholder="e.g. 250" min="0" required>
                 </div>
 
                 <div class="btn-submit-container">
