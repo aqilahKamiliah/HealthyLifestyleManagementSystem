@@ -64,67 +64,126 @@ if (isset($_POST['update'])) {
 
 <?php include 'headerCoach.php'; ?>
 
-<div style="width:80%; margin:30px auto;">
+<div style="
+    display:flex;
+    justify-content:center;
+    margin-top:40px;
+">
 
-    <div style="border:1px solid #ccc; padding:20px; border-radius:10px;">
+    <div style="
+        width:500px;
+        background:white;
+        border:1px solid #ccc;
+        border-radius:15px;
+        padding:30px;
+        box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    ">
 
-        <h2>Edit Coach Profile</h2>
+        <h2 style="
+            color:#2e7d32;
+            margin-bottom:25px;
+        ">
+            Edit Coach Profile
+        </h2>
 
         <form method="POST">
 
             <p><strong>Full Name</strong></p>
+
             <input
                 type="text"
                 name="name"
                 value="<?php echo htmlspecialchars($data['name']); ?>"
                 required
-                style="width:300px; padding:8px;">
+                style="
+                    width:100%;
+                    padding:10px;
+                    box-sizing:border-box;
+                ">
 
             <br><br>
 
             <p><strong>Email</strong></p>
+
             <input
                 type="text"
                 value="<?php echo htmlspecialchars($data['email']); ?>"
                 disabled
-                style="width:300px; padding:8px; background:#eee;">
+                style="
+                    width:100%;
+                    padding:10px;
+                    box-sizing:border-box;
+                    background:#eeeeee;
+                ">
 
             <br><br>
 
             <p><strong>Specialization</strong></p>
+
             <input
                 type="text"
                 name="specialization"
                 value="<?php echo htmlspecialchars($data['specialization']); ?>"
                 required
-                style="width:300px; padding:8px;">
+                style="
+                    width:100%;
+                    padding:10px;
+                    box-sizing:border-box;
+                ">
 
             <br><br>
 
             <p><strong>Experience Years</strong></p>
+
             <input
                 type="number"
                 name="experience"
                 value="<?php echo htmlspecialchars($data['experience_years']); ?>"
                 required
-                style="width:300px; padding:8px;">
+                style="
+                    width:100%;
+                    padding:10px;
+                    box-sizing:border-box;
+                ">
 
-            <br><br>
+            <div style="
+                display:flex;
+                gap:10px;
+                margin-top:25px;
+            ">
 
-            <button
-                type="submit"
-                name="update"
-                style="background:#6a5acd; color:white; border:none; padding:10px 20px; border-radius:5px;">
-                Update
-            </button>
-
-            <a href="coach_profile.php">
                 <button
-                    type="button"
-                    style="background:gray; color:white; border:none; padding:10px 20px; border-radius:5px;">
-                    Cancel
+                    type="submit"
+                    name="update"
+                    style="
+                        background:#6a5acd;
+                        color:white;
+                        border:none;
+                        padding:10px 25px;
+                        border-radius:8px;
+                        cursor:pointer;
+                    ">
+                    Update
                 </button>
-            </a>
+
+                <a href="coach_profile.php">
+
+                    <button
+                        type="button"
+                        style="
+                            background:gray;
+                            color:white;
+                            border:none;
+                            padding:10px 25px;
+                            border-radius:8px;
+                            cursor:pointer;
+                        ">
+                        Cancel
+                    </button>
+
+                </a>
+
+            </div>
 
         </form>
 
