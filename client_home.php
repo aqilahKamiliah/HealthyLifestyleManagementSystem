@@ -7,31 +7,17 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $user_id = $_SESSION['user_id']; 
+$sql = "SELECT Client_id
+        FROM Client
+        WHERE user_id = '$user_id'";
 
-if (isset($_POST['age'])) {
-    
-    $name = $_POST['name'];
-    $gender = $_POST['gender'];
-    $age = $_POST['age'];
-    $weight = $_POST['weight'];
-    $height = $_POST['height'];
-    $activity_text = $_POST['activity_level'];
-    $activity_level_id = 2; 
-    if ($activity_text == "Not Very Active" || $activity_text == "Lightly Active") {
-        $activity_level_id = 1; 
-    } else if ($activity_text == "Active" || $activity_text == "Very Active") {
-        $activity_level_id = 3; 
-    }
-    $coach_id = 1;
-    $query = "INSERT INTO Client (age, gender, height, weight, activity_level_id, user_id, coach_id) 
-              VALUES ('$age', '$gender', '$height', '$weight', '$activity_level_id', '$user_id', '$coach_id')";
+$result = mysqli_query($conn,$sql);
 
-    if (mysqli_query($conn, $query)) {
-        echo "<script>alert('Maklumat kesihatan anda berjaya disimpan!');</script>";
-    } else {
-        echo "<script>alert('Gagal menyimpan data: " . mysqli_error($conn) . "');</script>";
-    }
-}
+$row = mysqli_fetch_assoc($result);
+
+$client_id = $row['Client_id'];
+
+
 include 'headerClient.php'; 
 ?>
 
@@ -171,23 +157,23 @@ include 'headerClient.php';
         .log-details span { color: #666; float: right; font-size: 12px; margin-top: 2px; }
 
         .btn-log-meal {
-            display: block;
-            width: 80%;
-            margin: 20px auto;
-            background-color: #4caf50;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            text-align: center;
-            font-size: 13px;
-        }
+    display: block;
+    width: 80%;
+    margin: 20px auto;
+    background-color: #4caf50;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    font-size: 13px;
+    text-decoration: none;
+}
 
-        .btn-log-meal:hover {
-            background-color: #388e3c;
-        }
+.btn-log-meal:hover {
+    background-color: #388e3c;
+}
 
         .todo-section {
             border-top: 1px solid #c8e6c9;
@@ -283,23 +269,69 @@ include 'headerClient.php';
             <h3 class="card-title" style="text-align: left;">Today's Activity & Log</h3>
             <span style="font-size: 13px; font-weight: bold; color: #555; display:block; margin-bottom: 10px;">Today</span>
             
-            <div class="log-item">
-                <div class="log-icon">🍳</div>
-                <div class="log-details">
-                    <b>Breakfast: Scrambled Eggs</b>
-                    <span>(350 kcal)</span>
-                </div>
-            </div>
+            <?php
 
-            <div class="log-item">
-                <div class="log-icon">🍎</div>
-                <div class="log-details">
-                    <b>Snack: Apple</b>
-                    <span>(95 kcal)</span>
-                </div>
-            </div>
 
-            <button class="btn-log-meal">+ LOG A NEW MEAL</button>
+
+$sql = "
+
+SELECT food_names, calorie, meal_type
+
+FROM food_logs
+
+WHERE client_id = '$client_id'
+
+AND date = CURDATE()
+
+ORDER BY log_id DESC
+
+";
+
+$result = mysqli_query($conn, $sql);
+
+if(mysqli_num_rows($result) > 0)
+{
+    while($row = mysqli_fetch_assoc($result))
+    {
+?>
+
+<div class="log-item">
+
+    <div class="log-icon">🍽️</div>
+
+    <div class="log-details">
+
+        <b>
+
+        <?= $row['meal_type']; ?>:
+        <?= $row['food_names']; ?>
+
+        </b>
+
+        <span>
+
+        (<?= $row['calorie']; ?> kcal)
+
+        </span>
+
+    </div>
+
+</div>
+
+<?php
+
+    }
+}
+else
+{
+    echo "<p>No food logged today.</p>";
+}
+
+?>
+
+            <a href="client_log.php" class="btn-log-meal">
+    + LOG A NEW MEAL
+</a>
 
             <div class="todo-section">
                 <h4>To-Do List</h4>

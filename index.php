@@ -45,20 +45,10 @@ if(isset($_POST['submit']))
     }
     else
     {
-        $insert = "INSERT INTO users (name, email, password, role)
-                   VALUES ('$name', '$email', '$password', '$role')";
-
-        if(mysqli_query($conn, $insert))
-        {
-            echo "<script>
-                    alert('Account created successfully! Please login.');
-                    window.location.href='index.php';
-                  </script>";
-        }
-        else
-        {
-            echo 'Error: ' . mysqli_error($conn);
-        }
+        echo "<script>
+                alert('Invalid email or password');
+                window.location.href='index.php';
+              </script>";
     }
 }
 ?>
@@ -105,7 +95,7 @@ if(isset($_POST['submit']))
     </form>
 
 
-    <button type="button" class="secondary-btn" onclick="showLogin()">Cancel</button>
+    <button class="secondary-btn" onclick="showLogin()">Cancel</button>
 </div>
 
 <script>
@@ -115,6 +105,12 @@ if(isset($_POST['submit']))
     }
 
     function showLogin(){
+        document.getElementById("registerForm").style.display = "none";
+        document.getElementById("loginForm").style.display = "block";
+    }
+
+    function registerSuccess(){
+        alert("Account created successfully!");
         document.getElementById("registerForm").style.display = "none";
         document.getElementById("loginForm").style.display = "block";
     }

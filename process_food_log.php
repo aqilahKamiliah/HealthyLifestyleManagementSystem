@@ -31,7 +31,7 @@ $sql = "INSERT INTO food_logs (food_names, calorie, meal_type, client_id, date)
 if(mysqli_query($conn, $sql)) {
     echo "<script>
         alert('Food log saved successfully!');
-        window.location='client_log.php';
+        window.location='client_home.php';
     </script>";
 } else {
     echo "Error: " . mysqli_error($conn);
