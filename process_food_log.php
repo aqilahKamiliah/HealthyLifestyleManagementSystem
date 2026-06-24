@@ -62,7 +62,7 @@ if(mysqli_query($conn, $sqlInsert))
 {
     echo "<script>
         alert('Food log saved successfully!');
-        window.location='client_log.php';
+        window.location='client_home.php';
     </script>";
 }
 else
