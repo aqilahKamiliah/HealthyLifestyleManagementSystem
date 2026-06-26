@@ -154,20 +154,42 @@ if (mysqli_num_rows($result) > 0) {
             <h2>Workout Suggestions</h2>
             <div style="height: 45px;"></div> 
             
-            <div class="suggestion-item-box">
-                <div class="item-icon-box">─</div>
-                <span>Cardio Steady Paced<br><span style="font-size: 16px; font-weight: normal; color: #444;">30 Minutes</span></span>
-            </div>
+            <?php
+$sqlWorkout = "
+SELECT exercise.exercise_name, exercise.sets
+FROM client
+JOIN exercise 
+ON client.activity_level_id = exercise.activity_level_id
+WHERE client.Client_id = '$client_id'
+LIMIT 3
+";
 
-            <div class="suggestion-item-box">
-                <div class="item-icon-box">─</div>
-                <span>50 Jumping Jacks</span>
-            </div>
+$resultWorkout = mysqli_query($conn, $sqlWorkout);
 
-            <div class="suggestion-item-box">
-                <div class="item-icon-box">─</div>
-                <span>25 Walking Lunges</span>
-            </div>
+if(mysqli_num_rows($resultWorkout) > 0)
+{
+    while($workout = mysqli_fetch_assoc($resultWorkout))
+    {
+?>
+
+<div class="suggestion-item-box">
+    <div class="item-icon-box">─</div>
+    <span>
+        <?= $workout['exercise_name']; ?><br>
+        <span style="font-size: 16px; font-weight: normal; color: #444;">
+            <?= $workout['sets']; ?>
+        </span>
+    </span>
+</div>
+
+<?php
+    }
+}
+else
+{
+    echo "<p>No workout suggestions available.</p>";
+}
+?>
         </div>
 
     </div>
