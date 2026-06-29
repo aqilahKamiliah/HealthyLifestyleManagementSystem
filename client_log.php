@@ -143,7 +143,7 @@
                         <option value="Breakfast">Breakfast</option>
                         <option value="Lunch">Lunch</option>
                         <option value="Dinner">Dinner</option>
-                        <option value="Snack">Snack</option>
+                       
                     </select>
                 </div>
 

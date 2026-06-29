@@ -15,12 +15,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $height = $_POST['height'];
     $coach_id = $_POST['coach_id']; 
     $activity_id = $_POST['activity_level']; 
+    $goal = $_POST['goal'];
 
-    $sql = "INSERT INTO client (user_id, age, gender, weight, height, activity_level_id, coach_id) 
-            VALUES ('$user_id', '$age', '$gender', '$weight', '$height', '$activity_id', '$coach_id')
-            ON DUPLICATE KEY UPDATE 
-            age = '$age', gender = '$gender', weight = '$weight', height = '$height', 
-            activity_level_id = '$activity_id', coach_id = '$coach_id'";
+    $sql = "INSERT INTO client
+(user_id, age, gender, weight, height,
+activity_level_id, coach_id, goal)
+
+VALUES
+
+('$user_id','$age','$gender','$weight',
+'$height','$activity_id','$coach_id','$goal')
+
+ON DUPLICATE KEY UPDATE
+
+age='$age',
+gender='$gender',
+weight='$weight',
+height='$height',
+activity_level_id='$activity_id',
+coach_id='$coach_id',
+goal='$goal'";
 
     if (mysqli_query($conn, $sql)) {
         header("Location: client_profile.php");
