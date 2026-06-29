@@ -9,6 +9,8 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $user_id = $_SESSION['user_id'];
+
+// 1. Ambil nama user
 $user_query = "SELECT name FROM users WHERE user_id = '$user_id'";
 $user_result = mysqli_query($conn, $user_query);
 $user_data = mysqli_fetch_assoc($user_result);
@@ -29,6 +31,7 @@ if (!$data) {
     $coach_name = "Tiada Coach";
     $coach_spec = "N/A";
 } else {
+    // Jika data wujud, masukkan ke dalam variabel
     $age     = $data['age'];
     $gender  = $data['gender'];
     $weight  = $data['weight'];
@@ -37,6 +40,7 @@ if (!$data) {
     $coach_spec = $data['specialization'] ?? "N/A";
 }
 
+// Pengiraan BMI
 $bmi = "-";
 $bmi_status = "-";
 if ($weight > 0 && $height > 0) {

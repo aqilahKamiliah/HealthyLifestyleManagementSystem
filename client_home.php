@@ -8,6 +8,15 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $user_id = $_SESSION['user_id']; 
+$sql = "SELECT Client_id
+        FROM Client
+        WHERE user_id = '$user_id'";
+
+$result = mysqli_query($conn,$sql);
+
+$row = mysqli_fetch_assoc($result);
+
+$client_id = $row['Client_id'];
 
 $sql = "SELECT Client_id FROM Client WHERE user_id = '$user_id'";
 $result = mysqli_query($conn,$sql);
@@ -220,9 +229,9 @@ include 'headerClient.php';
             text-decoration: none;
         }
 
-        .btn-log-meal:hover {
-            background-color: #388e3c;
-        }
+.btn-log-meal:hover {
+    background-color: #388e3c;
+}
 
         .todo-section {
             border-top: 1px solid #c8e6c9;

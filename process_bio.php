@@ -3,6 +3,7 @@ session_start();
 include 'connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Pastikan session wujud
     if (!isset($_SESSION['user_id'])) {
         die("User tidak login.");
     }
