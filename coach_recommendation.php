@@ -36,8 +36,15 @@
 include 'connection.php';
 include 'headerCoach.php';
 
-// TEMP coach id (later session)
-$coach_id = 1;
+session_start();
+
+$user_id = $_SESSION['user_id'];
+
+$coachQuery = "SELECT coach_id FROM coach WHERE user_id = '$user_id'";
+$coachResult = mysqli_query($conn, $coachQuery);
+$coachData = mysqli_fetch_assoc($coachResult);
+
+$coach_id = $coachData['coach_id'];
 ?>
 
 <!DOCTYPE html>
