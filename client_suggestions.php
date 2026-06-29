@@ -108,22 +108,28 @@ $client_id = $rowClient['Client_id'];
 
         <div class="suggestion-col-card">
             <h2>Meal Suggestions</h2>
-            <div class="sub-title">Today's Lunch</div>
-            
-            <?php
-$sql = "
-SELECT 
-    food.food_name,
-    food.calorie,
-    recommendation.type
-FROM recommendation
-JOIN recommendation_food 
-    ON recommendation.rec_id = recommendation_food.rec_id
-JOIN food 
-    ON recommendation_food.food_id = food.food_id
-WHERE recommendation.client_id = '$client_id'
-ORDER BY recommendation.rec_id DESC
-";
+
+<?php
+$meals = ['Breakfast', 'Lunch', 'Dinner'];
+
+foreach($meals as $meal)
+{
+    echo "<div class='sub-title'>Today's $meal</div>";
+
+    $sql = "
+    SELECT 
+        food.food_name,
+        food.calorie,
+        recommendation.type
+    FROM recommendation
+    JOIN recommendation_food 
+        ON recommendation.rec_id = recommendation_food.rec_id
+    JOIN food 
+        ON recommendation_food.food_id = food.food_id
+    WHERE recommendation.client_id = '$client_id'
+    AND recommendation.type = '$meal'
+    ORDER BY recommendation.rec_id DESC
+    ";
 
 $result = mysqli_query($conn, $sql);
 
@@ -146,6 +152,7 @@ if (mysqli_num_rows($result) > 0) {
     }
 } else {
     echo "<p>No meal suggestions yet.</p>";
+}
 }
 ?>
         </div>
