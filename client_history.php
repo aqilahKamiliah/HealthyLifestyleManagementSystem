@@ -46,7 +46,6 @@ $total_log = $logCountData['total_log'] ?? 0;
                 $trendSql = "SELECT * FROM progress 
                              WHERE client_id = '$client_id'
                              ORDER BY date ASC";
-
                 $trendResult = mysqli_query($conn, $trendSql);
 
                 if(mysqli_num_rows($trendResult) > 0)
@@ -79,7 +78,6 @@ $total_log = $logCountData['total_log'] ?? 0;
                                    WHERE client_id = '$client_id'
                                    ORDER BY date DESC
                                    LIMIT 5";
-
                 $foodSummaryResult = mysqli_query($conn, $foodSummarySql);
 
                 if(mysqli_num_rows($foodSummaryResult) > 0)
@@ -120,7 +118,6 @@ $total_log = $logCountData['total_log'] ?? 0;
                     <th>Weight</th>
                 </tr>
             </thead>
-
             <tbody>
                 <?php
                 if(mysqli_num_rows($progressResult) > 0)
@@ -158,7 +155,6 @@ $total_log = $logCountData['total_log'] ?? 0;
                     <th>Calorie</th>
                 </tr>
             </thead>
-
             <tbody>
                 <?php
                 if(mysqli_num_rows($foodResult) > 0)

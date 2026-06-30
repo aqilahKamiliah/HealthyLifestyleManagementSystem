@@ -1,5 +1,20 @@
-<?php include 'headerClient.php'; 
-include 'connection.php';?>
+<?php
+session_start();
+include 'connection.php';
+include 'headerClient.php';
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: index.php");
+    exit();
+}
+
+$user_id = $_SESSION['user_id'];
+
+$sqlClient = "SELECT Client_id FROM Client WHERE user_id = '$user_id'";
+$resultClient = mysqli_query($conn, $sqlClient);
+$rowClient = mysqli_fetch_assoc($resultClient);
+$client_id = $rowClient['Client_id'];
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -93,42 +108,95 @@ include 'connection.php';?>
 
         <div class="suggestion-col-card">
             <h2>Meal Suggestions</h2>
-            <div class="sub-title">Today's Lunch</div>
-            
-            <div class="suggestion-item-box">
-                <div class="item-icon-box">─</div>
-                <span>Grilled Chicken Salad</span>
-            </div>
 
-            <div class="suggestion-item-box">
-                <div class="item-icon-box">─</div>
-                <span>Tuna Stuffed Avocado</span>
-            </div>
+<?php
+$meals = ['Breakfast', 'Lunch', 'Dinner'];
 
-            <div class="suggestion-item-box">
-                <div class="item-icon-box">─</div>
-                <span>Berry Smoothie</span>
-            </div>
+foreach($meals as $meal)
+{
+    echo "<div class='sub-title'>Today's $meal</div>";
+
+    $sql = "
+    SELECT 
+        food.food_name,
+        food.calorie,
+        recommendation.type
+    FROM recommendation
+    JOIN recommendation_food 
+        ON recommendation.rec_id = recommendation_food.rec_id
+    JOIN food 
+        ON recommendation_food.food_id = food.food_id
+    WHERE recommendation.client_id = '$client_id'
+    AND recommendation.type = '$meal'
+    ORDER BY recommendation.rec_id DESC
+    ";
+
+$result = mysqli_query($conn, $sql);
+
+if (mysqli_num_rows($result) > 0) {
+    while($row = mysqli_fetch_assoc($result)) {
+?>
+
+<div class="suggestion-item-box">
+    <div class="item-icon-box">─</div>
+    <span>
+        <?= $row['food_name']; ?>
+        <br>
+        <span style="font-size: 16px; font-weight: normal; color: #444;">
+            <?= $row['calorie']; ?> kcal
+        </span>
+    </span>
+</div>
+
+<?php
+    }
+} else {
+    echo "<p>No meal suggestions yet.</p>";
+}
+}
+?>
         </div>
 
         <div class="suggestion-col-card">
             <h2>Workout Suggestions</h2>
             <div style="height: 45px;"></div> 
             
-            <div class="suggestion-item-box">
-                <div class="item-icon-box">─</div>
-                <span>Cardio Steady Paced<br><span style="font-size: 16px; font-weight: normal; color: #444;">30 Minutes</span></span>
-            </div>
+            <?php
+$sqlWorkout = "
+SELECT exercise.exercise_name, exercise.sets
+FROM client
+JOIN exercise 
+ON client.activity_level_id = exercise.activity_level_id
+WHERE client.Client_id = '$client_id'
+LIMIT 3
+";
 
-            <div class="suggestion-item-box">
-                <div class="item-icon-box">─</div>
-                <span>50 Jumping Jacks</span>
-            </div>
+$resultWorkout = mysqli_query($conn, $sqlWorkout);
 
-            <div class="suggestion-item-box">
-                <div class="item-icon-box">─</div>
-                <span>25 Walking Lunges</span>
-            </div>
+if(mysqli_num_rows($resultWorkout) > 0)
+{
+    while($workout = mysqli_fetch_assoc($resultWorkout))
+    {
+?>
+
+<div class="suggestion-item-box">
+    <div class="item-icon-box">─</div>
+    <span>
+        <?= $workout['exercise_name']; ?><br>
+        <span style="font-size: 16px; font-weight: normal; color: #444;">
+            <?= $workout['sets']; ?>
+        </span>
+    </span>
+</div>
+
+<?php
+    }
+}
+else
+{
+    echo "<p>No workout suggestions available.</p>";
+}
+?>
         </div>
 
     </div>

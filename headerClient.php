@@ -19,7 +19,7 @@
     <nav>
     <a href="client_home.php">Home</a> 
     <a href="client_profile.php">Profile</a> 
-    <a href="client_log.php">Weight Log</a> 
+    <a href="client_log.php">Log</a> 
     <a href="client_suggestions.php">Suggestions</a>
     <a href="client_history.php">History</a>
     <a href="client_coach_page1.php">Coach</a>

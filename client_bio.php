@@ -1,26 +1,45 @@
-<?php include 'headerClient.php'; 
-include 'connection.php';?>
 <?php
+session_start(); // MESTI ada session_start()
 include 'connection.php';
-if (isset($_POST['save_bio'])) {
-    
-    $age = $_POST['age'];
-    $gender = $_POST['gender'];
-    $height = $_POST['height'];
-    $weight = $_POST['weight'];
-    $activity_level = $_POST['activity_level_id'];
-    
-    $user_id = 2; 
-    $coach_id = 1;
 
-    $query = "INSERT INTO Client (age, gender, height, weight, activity_level_id, user_id, coach_id) 
-              VALUES ('$age', '$gender', '$height', '$weight', '$activity_level', '$user_id', '$coach_id')";
+if (!isset($_SESSION['user_id'])) {
+    header("Location: index.php");
+    exit();
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $age            = $_POST['age'];
+    $gender         = $_POST['gender'];
+    $height         = $_POST['height'];
+    $weight         = $_POST['weight'];
+    $activity_level = $_POST['activity_level']; // Tukar dari activity_level_id kepada activity_level
+    $coach_id       = $_POST['coach_id'];
+    $user_id        = $_SESSION['user_id'];
+    $goal = $_POST['goal']; // Guna ID dari login session
+
+    // Semak jika data sudah ada (UPDATE) atau belum (INSERT)
+    $check_query = "SELECT * FROM client WHERE user_id = '$user_id'";
+    $check_res = mysqli_query($conn, $check_query);
+
+    if (mysqli_num_rows($check_res) > 0) {
+        // Jika sudah ada, buat UPDATE
+        $query = "UPDATE client SET age='$age', gender='$gender', height='$height', weight='$weight', 
+                  activity_level_id='$activity_level', coach_id='$coach_id' WHERE user_id='$user_id'";
+                  $query = "UPDATE client SET age='$age', gender='$gender', height='$height', weight='$weight', 
+          activity_level_id='$activity_level', goal='$goal', coach_id='$coach_id' 
+          WHERE user_id='$user_id'";
+    } else {
+        // Jika belum ada, buat INSERT
+        $query = "INSERT INTO client (age, gender, height, weight, activity_level_id, user_id, coach_id) 
+                  VALUES ('$age', '$gender', '$height', '$weight', '$activity_level', '$user_id', '$coach_id')";
+                  $query = "INSERT INTO client (age, gender, height, weight, activity_level_id, goal, user_id, coach_id) 
+          VALUES ('$age', '$gender', '$height', '$weight', '$activity_level', '$goal', '$user_id', '$coach_id')"; 
+    }
 
     if (mysqli_query($conn, $query)) {
-        echo "<script>alert('Maklumat kesihatan berjaya disimpan!'); window.location='client_home.php';</script>";
-        exit();
+        echo "<script>alert('Profil berjaya dikemaskini!'); window.location='client_profile.php';</script>";
     } else {
-        echo "Ralat menyimpan data: " . mysqli_error($conn);
+        echo "Ralat: " . mysqli_error($conn);
     }
 }
 ?>
@@ -150,7 +169,7 @@ if (isset($_POST['save_bio'])) {
     </div>
 
     <div class="form-card">
-        <form action="client_profile.php" method="POST">
+        <form action="process_bio.php" method="POST">
                
             <div class="form-grid">
                 
@@ -185,18 +204,43 @@ if (isset($_POST['save_bio'])) {
                 </div>
 
                 <div class="form-group">
-                    <label>Activity Level</label>
-                    <select name="activity_level" required>
-                        <option value="" disabled selected>Select level</option>
-                        <option value="Not Very Active">Not Very Active</option>
-                        <option value="Lightly Active">Lightly Active</option>
-                        <option value="Moderate">Moderate</option>
-                        <option value="Active">Active</option>
-                        <option value="Very Active">Very Active</option>
-                    </select>
-                </div>
+    <label>Select Your Coach</label>
+    <select name="coach_id" required>
+        <option value="" disabled selected>Select a coach</option>
+        <?php
+        // Ambil senarai coach dari database
+        $coach_query = "SELECT coach.coach_id, users.name 
+                        FROM coach 
+                        JOIN users ON coach.user_id = users.user_id";
+        $coach_res = mysqli_query($conn, $coach_query);
+        while($row = mysqli_fetch_assoc($coach_res)) {
+            echo "<option value='".$row['coach_id']."'>".$row['name']."</option>";
+        }
+        ?>
+    </select>
+</div>
 
-            </div>
+                <div class="form-group">
+    <label>Activity Level</label>
+    <select name="activity_level" required>
+        <option value="" disabled selected>Select level</option>
+        <option value="1">Not Very Active</option>
+        <option value="2">Lightly Active</option>
+        <option value="3">Moderate</option>
+        <option value="4">Active</option>
+        <option value="5">Very Active</option>
+    </select>
+</div>
+
+<div class="form-group">
+    <label>Goal</label>
+    <select name="goal" required>
+        <option value="" disabled selected>Select goal</option>
+        <option value="Lose Weight">Lose Weight</option>
+        <option value="Maintain Weight">Maintain Weight</option>
+        <option value="Gain Weight">Gain Weight</option>
+    </select>
+</div>
 
             <div class="btn-container">
                 <button type="submit">Continue</button>

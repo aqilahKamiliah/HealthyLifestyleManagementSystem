@@ -2,24 +2,44 @@
 session_start();
 include 'connection.php'; 
 
+
 if (!isset($_SESSION['user_id'])) {
     header("Location: index.php");
     exit();
 }
 
 $user_id = $_SESSION['user_id'];
+
+// 1. Ambil nama user
 $user_query = "SELECT name FROM users WHERE user_id = '$user_id'";
 $user_result = mysqli_query($conn, $user_query);
 $user_data = mysqli_fetch_assoc($user_result);
 $display_name = $user_data['name'] ?? "User";
-$client_query = "SELECT * FROM client WHERE user_id = '$user_id'";
-$client_result = mysqli_query($conn, $client_query);
-$data = mysqli_fetch_assoc($client_result);
 
-$age     = $data['age'] ?? "-";
-$gender  = $data['gender'] ?? "-";
-$weight  = $data['weight'] ?? "0";
-$height  = $data['height'] ?? "0";
+$client_query = "SELECT c.*, co.specialization, u.name as coach_name 
+                 FROM client c 
+                 LEFT JOIN coach co ON c.coach_id = co.coach_id 
+                 LEFT JOIN users u ON co.user_id = u.user_id 
+                 WHERE c.user_id = '$user_id'";
+
+$client_result = mysqli_query($conn, $client_query);
+$data = mysqli_fetch_assoc($client_result); 
+
+if (!$data) {
+    $age = $gender = "-";
+    $weight = $height = "0";
+    $coach_name = "Tiada Coach";
+    $coach_spec = "N/A";
+} else {
+    
+    $age     = $data['age'];
+    $gender  = $data['gender'];
+    $weight  = $data['weight'];
+    $height  = $data['height'];
+    $coach_name = $data['coach_name'] ?? "Tiada Coach";
+    $coach_spec = $data['specialization'] ?? "N/A";
+}
+
 
 $bmi = "-";
 $bmi_status = "-";
@@ -306,8 +326,6 @@ if(isset($data['coach_id']) && $data['coach_id'] != 0)
             <b><?php echo htmlspecialchars($coach_name); ?></b>
             <span class="cert-tag">( <?php echo htmlspecialchars($coach_specialization); ?> )</span>
         </div>
-    </div>
-
 </div>
 
 </body>
