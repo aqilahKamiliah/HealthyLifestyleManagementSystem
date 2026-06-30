@@ -5,88 +5,60 @@ include 'headerClient.php';
 
 $user_id = $_SESSION['user_id'] ?? 0;
 
-if ($user_id == 0) {
-    header("Location: index.php");
-    exit();
-}
 
-/* Get client info */
 $clientSql = "SELECT client_id, coach_id FROM client WHERE user_id = '$user_id'";
 $clientResult = mysqli_query($conn, $clientSql);
-$clientData = mysqli_fetch_assoc($clientResult);
+$clientRow = mysqli_fetch_assoc($clientResult);
 
-$client_id = $clientData['client_id'] ?? 0;
-$coach_id = $clientData['coach_id'] ?? 0;
+$client_id = $clientRow['client_id'] ?? 0;
+$coach_id = $clientRow['coach_id'] ?? 0;
 
-if ($client_id == 0) {
-    header("Location: client_bio.php");
-    exit();
-}
 
-if ($coach_id == 0) {
+if($coach_id == 0)
+{
     header("Location: client_coach_page1.php");
     exit();
 }
 
-/* Check if already evaluated */
+
 $checkEvalSql = "SELECT * FROM evaluation 
                  WHERE client_id = '$client_id' 
-                 AND coach_id = '$coach_id'";
+                 AND coach_id = '$coach_id'
+                 LIMIT 1";
 $checkEvalResult = mysqli_query($conn, $checkEvalSql);
-$alreadyRated = mysqli_num_rows($checkEvalResult) > 0;
+$existingEval = mysqli_fetch_assoc($checkEvalResult);
 
-$myRating = "";
-$myFeedback = "";
-$myDate = "";
 
-if($alreadyRated)
+if(isset($_POST['submit_evaluation']) && !$existingEval)
 {
-    $evalData = mysqli_fetch_assoc($checkEvalResult);
-    $myRating = $evalData['rating'];
-    $myFeedback = $evalData['feedback'];
-    $myDate = $evalData['date'];
-}
-
-/* Insert evaluation */
-if (isset($_POST['submit_evaluation'])) {
     $rating = $_POST['rating'];
-    $feedback = mysqli_real_escape_string($conn, $_POST['feedback']);
+    $feedback = $_POST['feedback'];
     $date = date("Y-m-d");
 
-    if ($alreadyRated) {
-        echo "<script>
-                alert('You have already submitted an evaluation for this coach.');
-                window.location='client_coach_page2.php';
-              </script>";
+    $insert = "INSERT INTO evaluation (feedback, date, rating, coach_id, client_id)
+               VALUES ('$feedback', '$date', '$rating', '$coach_id', '$client_id')";
+
+    if(mysqli_query($conn, $insert))
+    {
+        echo "<script>alert('Evaluation submitted successfully!'); window.location='client_coach_page2.php';</script>";
         exit();
     }
-    else {
-        $insert = "INSERT INTO evaluation (feedback, date, rating, coach_id, client_id)
-                   VALUES ('$feedback', '$date', '$rating', '$coach_id', '$client_id')";
-
-        if (mysqli_query($conn, $insert)) {
-            echo "<script>
-                    alert('Evaluation submitted successfully!');
-                    window.location='client_coach_page2.php';
-                  </script>";
-            exit();
-        } 
-        else {
-            echo "Error inserting evaluation: " . mysqli_error($conn);
-        }
+    else
+    {
+        echo "Error: " . mysqli_error($conn);
     }
 }
 
-/* Get selected coach details */
+
 $sql = "SELECT coach.coach_id, coach.specialization, coach.experience_years, users.name
-        FROM coach
-        JOIN users ON coach.user_id = users.user_id
-        WHERE coach.coach_id = '$coach_id'";
+        FROM coach, users
+        WHERE coach.user_id = users.user_id
+        AND coach.coach_id = '$coach_id'";
 
 $result = mysqli_query($conn, $sql);
 $row = mysqli_fetch_assoc($result);
 
-/* Get average rating */
+
 $ratingSql = "SELECT AVG(rating) AS avg_rating 
               FROM evaluation 
               WHERE coach_id = '$coach_id'";
@@ -106,8 +78,8 @@ $avg_rating = $ratingRow['avg_rating'] ?? 0;
             <?php
             if($row)
             {
-                echo "<h3>" . htmlspecialchars($row['name']) . "</h3>";
-                echo "<p>Specialization: " . htmlspecialchars($row['specialization']) . "</p>";
+                echo "<h3>" . $row['name'] . "</h3>";
+                echo "<p>Specialization: " . $row['specialization'] . "</p>";
                 echo "<p>Experience: " . $row['experience_years'] . " years</p>";
             }
             else
@@ -120,10 +92,30 @@ $avg_rating = $ratingRow['avg_rating'] ?? 0;
 
         <div class="reminder-box">
             <h2>Reminder Messages</h2>
-            <p>
-                Remember to track your meals daily and
-                stay hydrated throughout the day.
-            </p>
+
+            <?php
+            $historySql = "SELECT * FROM history
+                           WHERE client_id = '$client_id'
+                           ORDER BY history_date DESC
+                           LIMIT 3";
+
+            $historyResult = mysqli_query($conn, $historySql);
+
+            if(mysqli_num_rows($historyResult) > 0)
+            {
+                while($history = mysqli_fetch_assoc($historyResult))
+                {
+                    echo "<p>";
+                    echo "<b>" . date('Y-m-d', strtotime($history['history_date'])) . "</b><br>";
+                    echo $history['message'];
+                    echo "</p>";
+                }
+            }
+            else
+            {
+                echo "<p>No reminder message available.</p>";
+            }
+            ?>
         </div>
     </div>
 
@@ -133,23 +125,26 @@ $avg_rating = $ratingRow['avg_rating'] ?? 0;
         <p>Average Rating: <?php echo number_format($avg_rating, 1); ?> / 5</p>
 
         <?php
-        if($alreadyRated)
+        if($existingEval)
         {
-            echo "<p style='color: green; font-weight: bold;'>
-                    You have already submitted your evaluation for this coach.
-                  </p>";
+        ?>
+            <p style="color: green; font-weight: bold;">
+                You have already submitted your evaluation for this coach.
+            </p>
 
-            echo "<div style='margin-top: 20px; padding: 15px; background-color: #e8f5e9; border-radius: 8px;'>
-                    <h3>Your Evaluation</h3>
-                    <p><b>Rating:</b> " . $myRating . " / 5</p>
-                    <p><b>Feedback:</b> " . htmlspecialchars($myFeedback) . "</p>
-                    <p><b>Date:</b> " . $myDate . "</p>
-                  </div>";
+            <div class="reminder-box">
+                <h3>Your Evaluation</h3>
+                <p><b>Rating:</b> <?php echo $existingEval['rating']; ?> / 5</p>
+                <p><b>Feedback:</b> <?php echo $existingEval['feedback']; ?></p>
+                <p><b>Date:</b> <?php echo $existingEval['date']; ?></p>
+            </div>
+        <?php
         }
         else
         {
         ?>
-            <form action="" method="POST">
+            <form action="client_coach_page2.php" method="POST">
+
                 <h3>Rate Your Coach</h3>
                 <select name="rating" required>
                     <option value="">Select Rating</option>
@@ -165,11 +160,11 @@ $avg_rating = $ratingRow['avg_rating'] ?? 0;
                 <br><br>
 
                 <button type="submit" name="submit_evaluation">Submit</button>
+
             </form>
         <?php
         }
         ?>
-
     </div>
 
 </div>
