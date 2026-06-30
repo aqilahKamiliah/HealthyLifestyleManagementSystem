@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-
+// 1. Ambil nama user
 $user_query = "SELECT name FROM users WHERE user_id = '$user_id'";
 $user_result = mysqli_query($conn, $user_query);
 $user_data = mysqli_fetch_assoc($user_result);
@@ -302,16 +302,30 @@ if(isset($data['coach_id']) && $data['coach_id'] != 0)
             </table>
         </div>
 
-        
-                 <div class="green-card coach-footer-card">
-    <div class="avatar-circle" style="width: 45px; height: 45px; font-size: 22px;">👤</div>
-    <div class="coach-meta-text">
-        <span>Your Coach :</span><br>
-        <b><?php echo htmlspecialchars($coach_name); ?></b>
-        <span class="cert-tag">( <?php echo htmlspecialchars($coach_spec); ?> )</span>
-    </div>
-</div>
-
+        <div class="green-card middle-col">
+            <h3>Daily Tracking Goal</h3>
+            <div class="goal-flex-container">
+                <div class="mini-progress-box">
+                    <div class="mini-progress-text">
+                        <span class="pct">65%</span>
+                        <span class="sub-pct">1,365 / 2,100 kcal</span>
+                    </div>
+                </div>
+                <div class="goal-details-text">
+                    <h4>Target Intake :</h4>
+                    <p>2100 kcal <span>( For Weight Loss )</span></p>
+                    <h4>Avg. Intake :</h4>
+                    <p style="margin-bottom: 0;">2000 kcal</p>
+                </div>
+            </div>
+        </div>
+    </div> <div class="green-card coach-footer-card">
+        <div class="avatar-circle" style="width: 45px; height: 45px; font-size: 22px;">👤</div>
+        <div class="coach-meta-text">
+            <span>Your Coach :</span><br>
+            <b><?php echo htmlspecialchars($coach_name); ?></b>
+            <span class="cert-tag">( <?php echo htmlspecialchars($coach_specialization); ?> )</span>
+        </div>
 </div>
 
 </body>
