@@ -1,9 +1,5 @@
 <?php
 session_start();
-<<<<<<< HEAD
-// 1. Panggil sambungan database korang
-=======
->>>>>>> b9a38c4d7837720804f16ad179650b89141f5b26
 include 'connection.php';
 
 if(isset($_POST['submit']))
@@ -11,23 +7,6 @@ if(isset($_POST['submit']))
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-<<<<<<< HEAD
-    // 2. Buat query SQL untuk cari user berdasarkan email & password yang ditaip
-    $query = "SELECT * FROM Users WHERE email = '$email' AND password = '$password'";
-    $result = mysqli_query($conn, $query);
-
-    // Jika user dijumpai dalam database
-    if(mysqli_num_rows($result) > 0)
-    {
-        $row = mysqli_fetch_assoc($result);
-
-        // 3. SIMPAN DATA DALAM SESSION (Penting untuk sekatan Shana & guna di client_home)
-        $_SESSION['user_id'] = $row['user_id']; // Ambil 'user_id' dari database (cth: Ali = 2)
-        $_SESSION['name'] = $row['name'];
-        $_SESSION['role'] = $row['role']; // Ambil 'client', 'coach', atau 'admin'
-
-        // 4. Hantar pengguna ke halaman utama mengikut 'role' masing-masing
-=======
     $sql = "SELECT * FROM users 
             WHERE email = '$email' 
             AND password = '$password'";
@@ -43,7 +22,6 @@ if(isset($_POST['submit']))
         $_SESSION['email'] = $row['email'];
         $_SESSION['role'] = $row['role'];
 
->>>>>>> b9a38c4d7837720804f16ad179650b89141f5b26
         if($row['role'] == 'client')
         {
             header("Location: client_bio.php");
@@ -62,13 +40,6 @@ if(isset($_POST['submit']))
     }
     else
     {
-<<<<<<< HEAD
-        // Jika data tiada atau salah taip
-        echo "<script>
-                alert('Invalid email or password');
-                window.location.href='index.php';
-              </script>";
-=======
         echo "<script>alert('Invalid email or password');</script>";
     }
 }
@@ -103,7 +74,6 @@ if(isset($_POST['register']))
         {
             echo 'Error: ' . mysqli_error($conn);
         }
->>>>>>> b9a38c4d7837720804f16ad179650b89141f5b26
     }
 }
 ?>
