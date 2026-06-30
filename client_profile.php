@@ -30,6 +30,25 @@ if ($weight > 0 && $height > 0) {
     elseif ($bmi_val < 25) $bmi_status = "Normal";
     elseif ($bmi_val < 30) $bmi_status = "Overweight";
     else $bmi_status = "Obese";
+
+    $coach_name = "No Coach Selected";
+$coach_specialization = "-";
+
+if(isset($data['coach_id']) && $data['coach_id'] != 0)
+{
+    $coach_id = $data['coach_id'];
+
+    $coach_query = "SELECT users.name, coach.specialization
+                    FROM coach, users
+                    WHERE coach.user_id = users.user_id
+                    AND coach.coach_id = '$coach_id'";
+
+    $coach_result = mysqli_query($conn, $coach_query);
+    $coach_data = mysqli_fetch_assoc($coach_result);
+
+    $coach_name = $coach_data['name'] ?? "No Coach Selected";
+    $coach_specialization = $coach_data['specialization'] ?? "-";
+}
 }
 ?>
 <?php include 'headerClient.php'; ?>
@@ -284,8 +303,8 @@ if ($weight > 0 && $height > 0) {
         <div class="avatar-circle" style="width: 45px; height: 45px; font-size: 22px;">👤</div>
         <div class="coach-meta-text">
             <span>Your Coach :</span><br>
-            <b>Sarah</b>
-            <span class="cert-tag">( Certified Nutritionist )</span>
+            <b><?php echo htmlspecialchars($coach_name); ?></b>
+            <span class="cert-tag">( <?php echo htmlspecialchars($coach_specialization); ?> )</span>
         </div>
     </div>
 

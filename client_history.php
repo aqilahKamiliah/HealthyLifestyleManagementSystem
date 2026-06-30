@@ -1,9 +1,25 @@
 <?php
+session_start();
 include 'connection.php';
 include 'headerClient.php';
 
-$sql = "SELECT * FROM progress ORDER BY date DESC";
-$result = mysqli_query($conn, $sql);
+$user_id = $_SESSION['user_id'] ?? 0;
+
+$clientSql = "SELECT client_id FROM client WHERE user_id = '$user_id'";
+$clientResult = mysqli_query($conn, $clientSql);
+$clientData = mysqli_fetch_assoc($clientResult);
+
+$client_id = $clientData['client_id'] ?? 0;
+
+$progressSql = "SELECT * FROM progress 
+                WHERE client_id = '$client_id'
+                ORDER BY date DESC";
+$progressResult = mysqli_query($conn, $progressSql);
+
+$foodSql = "SELECT * FROM food_logs
+            WHERE client_id = '$client_id'
+            ORDER BY date DESC";
+$foodResult = mysqli_query($conn, $foodSql);
 ?>
 
 <div class="history-container">
@@ -13,7 +29,10 @@ $result = mysqli_query($conn, $sql);
             <h2>Weight Trend</h2>
             <div class="chart">
                 <?php
-                $trendSql = "SELECT * FROM progress ORDER BY date ASC";
+                $trendSql = "SELECT * FROM progress 
+                             WHERE client_id = '$client_id'
+                             ORDER BY date ASC";
+
                 $trendResult = mysqli_query($conn, $trendSql);
 
                 if(mysqli_num_rows($trendResult) > 0)
@@ -31,6 +50,33 @@ $result = mysqli_query($conn, $sql);
             </div>
         </div>
 
+        <div class="card">
+            <h2>Food Log Summary</h2>
+            <div class="chart">
+                <?php
+                $foodSummarySql = "SELECT * FROM food_logs
+                                   WHERE client_id = '$client_id'
+                                   ORDER BY date DESC
+                                   LIMIT 5";
+
+                $foodSummaryResult = mysqli_query($conn, $foodSummarySql);
+
+                if(mysqli_num_rows($foodSummaryResult) > 0)
+                {
+                    while($food = mysqli_fetch_assoc($foodSummaryResult))
+                    {
+                        echo $food['date'] . " - " . $food['meal_type'] . "<br>";
+                        echo $food['food_names'] . " (" . $food['calorie'] . " kcal)<br><br>";
+                    }
+                }
+                else
+                {
+                    echo "No food log available.";
+                }
+                ?>
+            </div>
+        </div>
+
     </div>
 
     <div class="table-section">
@@ -43,26 +89,64 @@ $result = mysqli_query($conn, $sql);
                 <tr>
                     <th>Date</th>
                     <th>Weight</th>
-                    <th>Client ID</th>
                 </tr>
             </thead>
 
             <tbody>
                 <?php
-                if(mysqli_num_rows($result) > 0)
+                if(mysqli_num_rows($progressResult) > 0)
                 {
-                    while($row = mysqli_fetch_assoc($result))
+                    while($row = mysqli_fetch_assoc($progressResult))
                     {
                         echo "<tr>";
                         echo "<td>" . $row['date'] . "</td>";
                         echo "<td>" . $row['weight'] . " kg</td>";
-                        echo "<td>" . $row['client_id'] . "</td>";
                         echo "</tr>";
                     }
                 }
                 else
                 {
-                    echo "<tr><td colspan='3'>No progress record found.</td></tr>";
+                    echo "<tr><td colspan='2'>No progress record found.</td></tr>";
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>
+
+    <br><br>
+
+    <div class="table-section">
+        <div class="table-title">
+            Food Log History
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Meal Type</th>
+                    <th>Food Name</th>
+                    <th>Calorie</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <?php
+                if(mysqli_num_rows($foodResult) > 0)
+                {
+                    while($row = mysqli_fetch_assoc($foodResult))
+                    {
+                        echo "<tr>";
+                        echo "<td>" . $row['date'] . "</td>";
+                        echo "<td>" . $row['meal_type'] . "</td>";
+                        echo "<td>" . $row['food_names'] . "</td>";
+                        echo "<td>" . $row['calorie'] . " kcal</td>";
+                        echo "</tr>";
+                    }
+                }
+                else
+                {
+                    echo "<tr><td colspan='4'>No food log record found.</td></tr>";
                 }
                 ?>
             </tbody>
