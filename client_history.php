@@ -20,6 +20,20 @@ $foodSql = "SELECT * FROM food_logs
             WHERE client_id = '$client_id'
             ORDER BY date DESC";
 $foodResult = mysqli_query($conn, $foodSql);
+
+$avgCalorieSql = "SELECT AVG(calorie) AS avg_calorie 
+                  FROM food_logs 
+                  WHERE client_id = '$client_id'";
+$avgCalorieResult = mysqli_query($conn, $avgCalorieSql);
+$avgCalorieData = mysqli_fetch_assoc($avgCalorieResult);
+$avg_calorie = $avgCalorieData['avg_calorie'] ?? 0;
+
+$logCountSql = "SELECT COUNT(*) AS total_log 
+                FROM food_logs 
+                WHERE client_id = '$client_id'";
+$logCountResult = mysqli_query($conn, $logCountSql);
+$logCountData = mysqli_fetch_assoc($logCountResult);
+$total_log = $logCountData['total_log'] ?? 0;
 ?>
 
 <div class="history-container">
@@ -51,6 +65,13 @@ $foodResult = mysqli_query($conn, $foodSql);
         </div>
 
         <div class="card">
+            <h2>AVG Calorie Intake</h2>
+            <div class="chart">
+                <?php echo round($avg_calorie, 2); ?> kcal
+            </div>
+        </div>
+
+        <div class="card">
             <h2>Food Log Summary</h2>
             <div class="chart">
                 <?php
@@ -75,6 +96,14 @@ $foodResult = mysqli_query($conn, $foodSql);
                 }
                 ?>
             </div>
+        </div>
+
+        <div class="card">
+            <h2>Goal Consistency</h2>
+            <div class="circle">
+                <?php echo $total_log; ?>
+            </div>
+            <p>Total Food Logs Recorded</p>
         </div>
 
     </div>
