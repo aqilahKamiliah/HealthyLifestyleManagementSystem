@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-// 1. Ambil nama user
+
 $user_query = "SELECT name FROM users WHERE user_id = '$user_id'";
 $user_result = mysqli_query($conn, $user_query);
 $user_data = mysqli_fetch_assoc($user_result);
@@ -31,7 +31,7 @@ if (!$data) {
     $coach_name = "Tiada Coach";
     $coach_spec = "N/A";
 } else {
-    // Jika data wujud, masukkan ke dalam variabel
+    
     $age     = $data['age'];
     $gender  = $data['gender'];
     $weight  = $data['weight'];
@@ -40,7 +40,7 @@ if (!$data) {
     $coach_spec = $data['specialization'] ?? "N/A";
 }
 
-// Pengiraan BMI
+
 $bmi = "-";
 $bmi_status = "-";
 if ($weight > 0 && $height > 0) {
@@ -50,6 +50,25 @@ if ($weight > 0 && $height > 0) {
     elseif ($bmi_val < 25) $bmi_status = "Normal";
     elseif ($bmi_val < 30) $bmi_status = "Overweight";
     else $bmi_status = "Obese";
+
+    $coach_name = "No Coach Selected";
+$coach_specialization = "-";
+
+if(isset($data['coach_id']) && $data['coach_id'] != 0)
+{
+    $coach_id = $data['coach_id'];
+
+    $coach_query = "SELECT users.name, coach.specialization
+                    FROM coach, users
+                    WHERE coach.user_id = users.user_id
+                    AND coach.coach_id = '$coach_id'";
+
+    $coach_result = mysqli_query($conn, $coach_query);
+    $coach_data = mysqli_fetch_assoc($coach_result);
+
+    $coach_name = $coach_data['name'] ?? "No Coach Selected";
+    $coach_specialization = $coach_data['specialization'] ?? "-";
+}
 }
 ?>
 <?php include 'headerClient.php'; ?>
