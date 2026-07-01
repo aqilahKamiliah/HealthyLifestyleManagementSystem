@@ -10,6 +10,7 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
+// 1. Ambil nama user
 $user_query = "SELECT name FROM users WHERE user_id = '$user_id'";
 $user_result = mysqli_query($conn, $user_query);
 $user_data = mysqli_fetch_assoc($user_result);
@@ -30,7 +31,7 @@ if (!$data) {
     $coach_name = "Tiada Coach";
     $coach_spec = "N/A";
 } else {
-    
+    // Jika data wujud, masukkan ke dalam variabel
     $age     = $data['age'];
     $gender  = $data['gender'];
     $weight  = $data['weight'];
@@ -39,7 +40,7 @@ if (!$data) {
     $coach_spec = $data['specialization'] ?? "N/A";
 }
 
-
+// Pengiraan BMI
 $bmi = "-";
 $bmi_status = "-";
 if ($weight > 0 && $height > 0) {
@@ -49,25 +50,6 @@ if ($weight > 0 && $height > 0) {
     elseif ($bmi_val < 25) $bmi_status = "Normal";
     elseif ($bmi_val < 30) $bmi_status = "Overweight";
     else $bmi_status = "Obese";
-
-    $coach_name = "No Coach Selected";
-$coach_specialization = "-";
-
-if(isset($data['coach_id']) && $data['coach_id'] != 0)
-{
-    $coach_id = $data['coach_id'];
-
-    $coach_query = "SELECT users.name, coach.specialization
-                    FROM coach, users
-                    WHERE coach.user_id = users.user_id
-                    AND coach.coach_id = '$coach_id'";
-
-    $coach_result = mysqli_query($conn, $coach_query);
-    $coach_data = mysqli_fetch_assoc($coach_result);
-
-    $coach_name = $coach_data['name'] ?? "No Coach Selected";
-    $coach_specialization = $coach_data['specialization'] ?? "-";
-}
 }
 ?>
 <?php include 'headerClient.php'; ?>
@@ -286,15 +268,11 @@ if(isset($data['coach_id']) && $data['coach_id'] != 0)
                 <h2><?php echo htmlspecialchars($display_name); ?></h2>
                 <span>Standard User</span>
             </div>
-        </div>
-
-        <div class="bmi-score-box">
+        </div> <div class="bmi-score-box">
             <h3>BMI : <?php echo $bmi; ?></h3>
             <span><?php echo $bmi_status; ?></span>
         </div>
-    </div>
-
-    <div class="profile-middle-grid">
+    </div> <div class="profile-middle-grid">
         <div class="green-card middle-col">
             <h3>Biometric Snapshot</h3>
             <table class="snapshot-table">
@@ -302,33 +280,19 @@ if(isset($data['coach_id']) && $data['coach_id'] != 0)
                 <tr><td>Gender :</td><td><?php echo $gender; ?></td></tr>
                 <tr><td>Current Weight :</td><td><?php echo $weight; ?> kg</td></tr>
                 <tr><td>Height :</td><td><?php echo $height; ?> cm</td></tr>
-          </table>
+            </table>
         </div>
 
-        <div class="green-card middle-col">
-            <h3>Daily Tracking Goal</h3>
-            <div class="goal-flex-container">
-                <div class="mini-progress-box">
-                    <div class="mini-progress-text">
-                        <span class="pct">65%</span>
-                        <span class="sub-pct">1,365 / 2,100 kcal</span>
-                    </div>
-                </div>
-                <div class="goal-details-text">
-                    <h4>Target Intake :</h4>
-                    <p>2100 kcal <span>( For Weight Loss )</span></p>
-                    <h4>Avg. Intake :</h4>
-                    <p style="margin-bottom: 0;">2000 kcal</p>
-                </div>
-            </div>
-        </div>
-    </div> <div class="green-card coach-footer-card">
-        <div class="avatar-circle" style="width: 45px; height: 45px; font-size: 22px;">👤</div>
-        <div class="coach-meta-text">
-            <span>Your Coach :</span><br>
-            <b><?php echo htmlspecialchars($coach_name); ?></b>
-            <span class="cert-tag">( <?php echo htmlspecialchars($coach_specialization); ?> )</span>
-        </div>
+        
+                 <div class="green-card coach-footer-card">
+    <div class="avatar-circle" style="width: 45px; height: 45px; font-size: 22px;">👤</div>
+    <div class="coach-meta-text">
+        <span>Your Coach :</span><br>
+        <b><?php echo htmlspecialchars($coach_name); ?></b>
+        <span class="cert-tag">( <?php echo htmlspecialchars($coach_spec); ?> )</span>
+    </div>
+</div>
+
 </div>
 
 </body>
