@@ -12,18 +12,6 @@ $clientRow = mysqli_fetch_assoc($clientResult);
 
 $client_id = $clientRow['client_id'] ?? 0;
 $coach_id = $clientRow['coach_id'] ?? 0;
-if(isset($_GET['coach_id']))
-{
-    $selected_coach_id = $_GET['coach_id'];
-
-    $updateCoach = "UPDATE client
-                    SET coach_id = '$selected_coach_id'
-                    WHERE client_id = '$client_id'";
-
-    mysqli_query($conn, $updateCoach);
-
-    $coach_id = $selected_coach_id;
-}
 
 if($coach_id == 0)
 {
@@ -106,26 +94,26 @@ $avg_rating = $ratingRow['avg_rating'] ?? 0;
 
             <?php
             $historySql = "SELECT * FROM history
-               WHERE client_id = '$client_id'
-               ORDER BY history_date DESC
-               LIMIT 3";
+                           WHERE client_id = '$client_id'
+                           ORDER BY history_date DESC
+                           LIMIT 3";
 
-$historyResult = mysqli_query($conn, $historySql);
+            $historyResult = mysqli_query($conn, $historySql);
 
-if($historyResult && mysqli_num_rows($historyResult) > 0)
-{
-    while($history = mysqli_fetch_assoc($historyResult))
-    {
-        echo "<p>";
-        echo "<b>" . date('Y-m-d', strtotime($history['history_date'])) . "</b><br>";
-        echo $history['message'];
-        echo "</p>";
-    }
-}
-else
-{
-    echo "<p>No reminder message available.</p>";
-}
+            if(mysqli_num_rows($historyResult) > 0)
+            {
+                while($history = mysqli_fetch_assoc($historyResult))
+                {
+                    echo "<p>";
+                    echo "<b>" . date('Y-m-d', strtotime($history['history_date'])) . "</b><br>";
+                    echo $history['message'];
+                    echo "</p>";
+                }
+            }
+            else
+            {
+                echo "<p>No reminder message available.</p>";
+            }
             ?>
         </div>
     </div>
