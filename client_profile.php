@@ -303,6 +303,23 @@ if(isset($data['coach_id']) && $data['coach_id'] != 0)
                 <tr><td>Current Weight :</td><td><?php echo $weight; ?> kg</td></tr>
                 <tr><td>Height :</td><td><?php echo $height; ?> cm</td></tr>
             </table>
+            <br>
+
+<br>
+
+<a href="edit_profile.php">
+    <button style="
+        background:#4CAF50;
+        color:white;
+        border:none;
+        padding:10px 20px;
+        border-radius:8px;
+        cursor:pointer;
+        font-size:14px;
+    ">
+        Update Profile
+    </button>
+</a>
         </div>
     </div>
 
