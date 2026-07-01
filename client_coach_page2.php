@@ -13,7 +13,6 @@ $clientRow = mysqli_fetch_assoc($clientResult);
 $client_id = $clientRow['client_id'] ?? 0;
 $coach_id = $clientRow['coach_id'] ?? 0;
 
-
 if($coach_id == 0)
 {
     header("Location: client_coach_page1.php");

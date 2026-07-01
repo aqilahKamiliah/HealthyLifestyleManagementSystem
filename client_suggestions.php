@@ -127,8 +127,9 @@ foreach($meals as $meal)
     JOIN food 
         ON recommendation_food.food_id = food.food_id
     WHERE recommendation.client_id = '$client_id'
-    AND recommendation.type = '$meal'
-    ORDER BY recommendation.rec_id DESC
+AND recommendation.type = '$meal'
+AND recommendation.date = CURDATE()
+ORDER BY recommendation.rec_id DESC
     ";
 
 $result = mysqli_query($conn, $sql);

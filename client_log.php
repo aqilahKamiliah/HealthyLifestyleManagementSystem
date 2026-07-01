@@ -36,7 +36,7 @@
             margin: 0;
             font-size: 28px;
             font-weight: bold;
-            color: #1b5e20; /* Hijau pekat */
+            color: #1b5e20; 
         }
 
         .log-section-card {

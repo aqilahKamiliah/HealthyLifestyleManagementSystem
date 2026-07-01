@@ -10,7 +10,6 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-// 1. Ambil nama user
 $user_query = "SELECT name FROM users WHERE user_id = '$user_id'";
 $user_result = mysqli_query($conn, $user_query);
 $user_data = mysqli_fetch_assoc($user_result);
@@ -287,11 +286,15 @@ if(isset($data['coach_id']) && $data['coach_id'] != 0)
                 <h2><?php echo htmlspecialchars($display_name); ?></h2>
                 <span>Standard User</span>
             </div>
-        </div> <div class="bmi-score-box">
+        </div>
+
+        <div class="bmi-score-box">
             <h3>BMI : <?php echo $bmi; ?></h3>
             <span><?php echo $bmi_status; ?></span>
         </div>
-    </div> <div class="profile-middle-grid">
+    </div>
+
+    <div class="profile-middle-grid">
         <div class="green-card middle-col">
             <h3>Biometric Snapshot</h3>
             <table class="snapshot-table">
@@ -299,7 +302,7 @@ if(isset($data['coach_id']) && $data['coach_id'] != 0)
                 <tr><td>Gender :</td><td><?php echo $gender; ?></td></tr>
                 <tr><td>Current Weight :</td><td><?php echo $weight; ?> kg</td></tr>
                 <tr><td>Height :</td><td><?php echo $height; ?> cm</td></tr>
-            </table>
+          </table>
         </div>
 
         <div class="green-card middle-col">
