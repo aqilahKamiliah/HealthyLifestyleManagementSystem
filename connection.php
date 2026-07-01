@@ -1,15 +1,16 @@
 <?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "healthy_lifestyle_db";
 
-$conn = mysqli_connect(
-    "127.0.0.1",
-    "root",
-    "",
-    "healthy_lifestyle_db",
-    3306
-);
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname );
 
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+} 
+// echo "Connected successfully";
 
 ?>

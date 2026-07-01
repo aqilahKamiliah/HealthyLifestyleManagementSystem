@@ -3,27 +3,44 @@ session_start();
 include 'connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Pastikan user_id diambil dari session, BUKAN letak manual '2'
-    $user_id = $_SESSION['user_id']; 
-    
+    // Pastikan session wujud
+    if (!isset($_SESSION['user_id'])) {
+        die("User tidak login.");
+    }
+
+    $user_id = $_SESSION['user_id'];
     $age = $_POST['age'];
     $gender = $_POST['gender'];
-    $height = $_POST['height'];
     $weight = $_POST['weight'];
-    $activity = $_POST['activity_level'];
+    $height = $_POST['height'];
+    $coach_id = $_POST['coach_id']; 
+    $activity_id = $_POST['activity_level']; 
+    $goal = $_POST['goal'];
 
-    // Simpan ke dalam database
-    // Contoh jika mahu kemaskini rekod sedia ada (Update)
-$sql = "UPDATE Client SET 
-        age = '$age', 
-        gender = '$gender', 
-        weight = '$weight', 
-        height = '$height' 
-        WHERE user_id = '$user_id'";
+    $sql = "INSERT INTO client
+(user_id, age, gender, weight, height,
+activity_level_id, coach_id, goal)
+
+VALUES
+
+('$user_id','$age','$gender','$weight',
+'$height','$activity_id','$coach_id','$goal')
+
+ON DUPLICATE KEY UPDATE
+
+age='$age',
+gender='$gender',
+weight='$weight',
+height='$height',
+activity_level_id='$activity_id',
+coach_id='$coach_id',
+goal='$goal'";
 
     if (mysqli_query($conn, $sql)) {
-    // Jika berjaya, terus bawa ke profil
-    header("Location: client_profile.php");
-}
+        header("Location: client_profile.php");
+        exit();
+    } else {
+        die("Error: " . mysqli_error($conn)); 
+    }
 }
 ?>

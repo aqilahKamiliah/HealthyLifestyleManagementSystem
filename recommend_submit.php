@@ -58,9 +58,6 @@ foreach($foods as $f)
 
 </table>
 
-<hr>
-
-<h3>Total Calories: <?php echo $total; ?> kcal</h3>
 
 <br>
 
