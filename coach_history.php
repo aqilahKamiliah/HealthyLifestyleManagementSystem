@@ -14,23 +14,20 @@ if(!isset($_SESSION['user_id']))
 $user_id = $_SESSION['user_id'];
 
 /* ===============================
-   2. GET coach_id FROM USER
+   2. GET coach_id
 ================================*/
-$sql = "SELECT coach_id FROM coach WHERE user_id = $user_id";
+$sql = "SELECT coach_id FROM coach WHERE user_id = '$user_id'";
 $result = mysqli_query($conn, $sql);
 
-if(!$result)
+if(!$result || mysqli_num_rows($result) == 0)
 {
-    die("Database Error: " . mysqli_error($conn));
-}
-
-if(mysqli_num_rows($result) == 0)
-{
-    die("No coach record found for this user.");
+    die("Coach not found.");
 }
 
 $coach = mysqli_fetch_assoc($result);
 $coach_id = $coach['coach_id'];
+
+
 ?>
 
 <!DOCTYPE html>
@@ -54,7 +51,7 @@ $coach_id = $coach['coach_id'];
         }
 
         .client-card {
-            width: 250px;
+            width: 280px;
             border: 1px solid #ccc;
             border-radius: 10px;
             padding: 15px;
@@ -66,25 +63,51 @@ $coach_id = $coach['coach_id'];
         .client-card:hover {
             box-shadow: 0 0 10px rgba(0,0,0,0.2);
         }
+
+        .badge {
+            display:inline-block;
+            padding:5px 10px;
+            border-radius:5px;
+            font-size:12px;
+            margin-top:10px;
+        }
+
+        .active {
+            background:#d1f7d6;
+            color:#1b5e20;
+        }
+
+        .completed {
+            background:#e0e0e0;
+            color:#333;
+        }
     </style>
 </head>
 
 <body>
 
-<div class="container" >
+<div class="container">
 
-<div style="text-align:center; margin-bottom:30px;">
-    <h2 style="margin-bottom:5px;">Coach History</h2>
-    <p style="color:gray;">Select a client to view their food logs</p>
-</div>
+<h2>Coach History</h2>
+<p style="color:gray;">Select a session to view client food logs</p>
+
 <div class="client-grid">
 
 <?php
+
 $sql = "
-SELECT Client.Client_id, Users.name, Client.goal
-FROM Client
-JOIN Users ON Users.user_id = Client.user_id
-WHERE Client.coach_id = $coach_id
+SELECT
+    cs.session_id,
+    cs.start_date,
+    cs.end_date,
+    cs.status,
+    c.goal,
+    u.name
+FROM coaching_session cs
+JOIN client c ON c.client_id = cs.client_id
+JOIN users u ON u.user_id = c.user_id
+WHERE cs.coach_id = '$coach_id'
+ORDER BY cs.start_date DESC
 ";
 
 $result = mysqli_query($conn, $sql);
@@ -96,26 +119,42 @@ if(!$result)
 
 if(mysqli_num_rows($result) == 0)
 {
-    echo "<p>No clients assigned yet.</p>";
+    echo "<p>No coaching sessions found.</p>";
 }
 
 while($row = mysqli_fetch_assoc($result))
 {
-    echo "
-    <a href='history_details.php?client_id={$row['Client_id']}' style='text-decoration:none;color:black;'>
-        <div class='client-card'>
-            <h3>{$row['name']}</h3>
-            <p>Goal: {$row['goal']}</p>
+    $badgeClass = ($row['status'] == 'Active') ? 'active' : 'completed';
+?>
+
+    <a href="history_details.php?session_id=<?php echo $row['session_id']; ?>"
+       style="text-decoration:none;color:black;">
+
+        <div class="client-card">
+
+            <h3><?php echo $row['name']; ?></h3>
+
+            <p><b>Goal:</b> <?php echo $row['goal']; ?></p>
+
+            <p><b>Start:</b> <?php echo $row['start_date']; ?></p>
+
+            <p><b>End:</b> <?php echo $row['end_date']; ?></p>
+
+            <span class="badge <?php echo $badgeClass; ?>">
+                <?php echo $row['status']; ?>
+            </span>
+
         </div>
+
     </a>
-    ";
+
+<?php
 }
 ?>
 
 </div>
 
 </div>
-
 
 </body>
 </html>
