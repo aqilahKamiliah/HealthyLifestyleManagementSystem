@@ -1,14 +1,207 @@
-<?php include 'headerClient.php'; ?>
+<?php
+session_start();
+include 'connection.php';
+include 'headerClient.php';
 
-<h2>My Fitness & Diet Suggestions</h2>
+if (!isset($_SESSION['user_id'])) {
+    header("Location: index.php");
+    exit();
+}
 
-<p>Here are the suggestions from your Coach to help achieve your healthy lifestyle goals:</p>
+$user_id = $_SESSION['user_id'];
 
-<ul>
-    <li><strong>Workout:</strong> Focus on brisk walking or jogging for 30 minutes, 3 times a week.</li>
-    <li><strong>Diet:</strong> Reduce sugary drinks and increase water intake to at least 8 glasses a day.</li>
-    <li><strong>Note from Coach:</strong> Great progress on your weight log! Keep it up.</li>
-</ul>
+$sqlClient = "SELECT Client_id FROM Client WHERE user_id = '$user_id'";
+$resultClient = mysqli_query($conn, $sqlClient);
+$rowClient = mysqli_fetch_assoc($resultClient);
+$client_id = $rowClient['Client_id'];
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suggestions</title>
+    <link rel="stylesheet" type="text/css" href="style1.css"> 
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fafafa;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .suggestion-page-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .suggestion-grid {
+            display: flex;
+            gap: 25px;
+        }
+
+        .suggestion-col-card {
+            flex: 1;
+            background-color: #e8f5e9; 
+            border-radius: 4px;
+            padding: 30px 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            min-height: 450px;
+        }
+
+
+        .suggestion-col-card h2 {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1b5e20; 
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .sub-title {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+
+        .suggestion-item-box {
+            background-color: #f1f8e9; 
+            border: 2px solid #111111; 
+            border-radius: 20px; 
+            padding: 15px 20px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            color: #111111;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+
+        .item-icon-box {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #111111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            background-color: #ffffff;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="suggestion-page-container">
+    <div class="suggestion-grid">
+
+        <div class="suggestion-col-card">
+            <h2>Meal Suggestions</h2>
+
+<?php
+$meals = ['Breakfast', 'Lunch', 'Dinner'];
+
+foreach($meals as $meal)
+{
+    echo "<div class='sub-title'>Today's $meal</div>";
+
+    $sql = "
+    SELECT 
+        food.food_name,
+        food.calorie,
+        recommendation.type
+    FROM recommendation
+    JOIN recommendation_food 
+        ON recommendation.rec_id = recommendation_food.rec_id
+    JOIN food 
+        ON recommendation_food.food_id = food.food_id
+    WHERE recommendation.client_id = '$client_id'
+AND recommendation.type = '$meal'
+AND recommendation.date = CURDATE()
+ORDER BY recommendation.rec_id DESC
+    ";
+
+$result = mysqli_query($conn, $sql);
+
+if (mysqli_num_rows($result) > 0) {
+    while($row = mysqli_fetch_assoc($result)) {
+?>
+
+<div class="suggestion-item-box">
+    <div class="item-icon-box">─</div>
+    <span>
+        <?= $row['food_name']; ?>
+        <br>
+        <span style="font-size: 16px; font-weight: normal; color: #444;">
+            <?= $row['calorie']; ?> kcal
+        </span>
+    </span>
+</div>
+
+<?php
+    }
+} else {
+    echo "<p>No meal suggestions yet.</p>";
+}
+}
+?>
+        </div>
+
+        <div class="suggestion-col-card">
+            <h2>Workout Suggestions</h2>
+            <div style="height: 45px;"></div> 
+            
+            <?php
+$sqlWorkout = "
+SELECT exercise.exercise_name, exercise.sets
+FROM client
+JOIN exercise 
+ON client.activity_level_id = exercise.activity_level_id
+WHERE client.Client_id = '$client_id'
+LIMIT 3
+";
+
+$resultWorkout = mysqli_query($conn, $sqlWorkout);
+
+if(mysqli_num_rows($resultWorkout) > 0)
+{
+    while($workout = mysqli_fetch_assoc($resultWorkout))
+    {
+?>
+
+<div class="suggestion-item-box">
+    <div class="item-icon-box">─</div>
+    <span>
+        <?= $workout['exercise_name']; ?><br>
+        <span style="font-size: 16px; font-weight: normal; color: #444;">
+            <?= $workout['sets']; ?>
+        </span>
+    </span>
+</div>
+
+<?php
+    }
+}
+else
+{
+    echo "<p>No workout suggestions available.</p>";
+}
+?>
+        </div>
+
+    </div>
+</div>
 
 </body>
 </html>

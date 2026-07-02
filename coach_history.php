@@ -1,10 +1,40 @@
-<?php include 'headerCoach.php'; ?>
+<?php
+session_start();
+include 'connection.php';
+include 'headerCoach.php';
+
+/* ===============================
+   1. CHECK LOGIN
+================================*/
+if(!isset($_SESSION['user_id']))
+{
+    die("<h3>Please login first.</h3>");
+}
+
+$user_id = $_SESSION['user_id'];
+
+/* ===============================
+   2. GET coach_id
+================================*/
+$sql = "SELECT coach_id FROM coach WHERE user_id = '$user_id'";
+$result = mysqli_query($conn, $sql);
+
+if(!$result || mysqli_num_rows($result) == 0)
+{
+    die("Coach not found.");
+}
+
+$coach = mysqli_fetch_assoc($result);
+$coach_id = $coach['coach_id'];
+
+
+?>
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>Coach History</title>
-    <link rel="stylesheet" type="text/css" href="style1.css">
+    <link rel="stylesheet" href="style1.css">
 
     <style>
         .container {
@@ -15,25 +45,41 @@
 
         .client-grid {
             display: flex;
-            justify-content: center;
-            gap: 20px;
             flex-wrap: wrap;
-            margin-top: 20px;
+            gap: 20px;
+            justify-content: center;
         }
 
         .client-card {
-            width: 30%;
-            min-width: 250px;
+            width: 280px;
             border: 1px solid #ccc;
-            border-radius: 12px;
+            border-radius: 10px;
             padding: 15px;
-            cursor: pointer;
             background: #fff;
+            cursor: pointer;
             transition: 0.3s;
         }
 
         .client-card:hover {
             box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        .badge {
+            display:inline-block;
+            padding:5px 10px;
+            border-radius:5px;
+            font-size:12px;
+            margin-top:10px;
+        }
+
+        .active {
+            background:#d1f7d6;
+            color:#1b5e20;
+        }
+
+        .completed {
+            background:#e0e0e0;
+            color:#333;
         }
     </style>
 </head>
@@ -42,39 +88,73 @@
 
 <div class="container">
 
-    <h2>Coach History</h2>
-    <p>Select a client to view their full history</p>
+<h2>Coach History</h2>
+<p style="color:gray;">Select a session to view client food logs</p>
 
-    <div class="client-grid">
+<div class="client-grid">
 
-        <a href="history_details.php?client=Ali" style="text-decoration:none; color:black;">
-            <div class="client-card">
-                <h3>Ali</h3>
-                <p>Goal: Lose Weight</p>
-                <p>2185 kcal/day</p>
-            </div>
-        </a>
+<?php
 
-        <a href="history_details.php?client=Maya" style="text-decoration:none; color:black;">
-            <div class="client-card">
-                <h3>Maya</h3>
-                <p>Goal: Maintain Weight</p>
-                <p>1650 kcal/day</p>
-            </div>
-        </a>
+$sql = "
+SELECT
+    cs.session_id,
+    cs.start_date,
+    cs.end_date,
+    cs.status,
+    c.goal,
+    u.name
+FROM coaching_session cs
+JOIN client c ON c.client_id = cs.client_id
+JOIN users u ON u.user_id = c.user_id
+WHERE cs.coach_id = '$coach_id'
+ORDER BY cs.start_date DESC
+";
 
-        <a href="history_details.php?client=Adi" style="text-decoration:none; color:black;">
-            <div class="client-card">
-                <h3>Adi</h3>
-                <p>Goal: Gain Weight</p>
-                <p>2150 kcal/day</p>
-            </div>
-        </a>
+$result = mysqli_query($conn, $sql);
 
-    </div>
+if(!$result)
+{
+    die("SQL Error: " . mysqli_error($conn));
+}
+
+if(mysqli_num_rows($result) == 0)
+{
+    echo "<p>No coaching sessions found.</p>";
+}
+
+while($row = mysqli_fetch_assoc($result))
+{
+    $badgeClass = ($row['status'] == 'Active') ? 'active' : 'completed';
+?>
+
+    <a href="history_details.php?session_id=<?php echo $row['session_id']; ?>"
+       style="text-decoration:none;color:black;">
+
+        <div class="client-card">
+
+            <h3><?php echo $row['name']; ?></h3>
+
+            <p><b>Goal:</b> <?php echo $row['goal']; ?></p>
+
+            <p><b>Start:</b> <?php echo $row['start_date']; ?></p>
+
+            <p><b>End:</b> <?php echo $row['end_date']; ?></p>
+
+            <span class="badge <?php echo $badgeClass; ?>">
+                <?php echo $row['status']; ?>
+            </span>
+
+        </div>
+
+    </a>
+
+<?php
+}
+?>
+
+</div>
 
 </div>
 
 </body>
 </html>
-

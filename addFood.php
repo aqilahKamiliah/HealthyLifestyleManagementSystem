@@ -7,23 +7,34 @@
     <link rel="stylesheet" type="text/css" href="styleAdmin.css">
 </head>
 <body>
-<?php include("headerAdmin.php");
+<?php 
+include("headerAdmin.php");
+include("connection.php");
 
-	$myTextFile = 'foodList.txt';
-    if(isset($_POST['submit'])) {
+if(isset($_POST['submit'])) {
+    // Sanitize input to prevent SQL injection
+    $foodName = mysqli_real_escape_string($conn, $_POST['foodName']);
+    $category = mysqli_real_escape_string($conn, $_POST['categories']);
+    $calories = (int)$_POST['calories']; // Ensure calories is an integer
+
+    // 1. Check if the food name already exists in the database
+    $checkFood = "SELECT food_name FROM food WHERE food_name = '$foodName'";
+    $result = mysqli_query($conn, $checkFood);
+
+    if(mysqli_num_rows($result) > 0) {
+        // Food already exists
+        echo "<script>alert('This food already exists!');</script>";
+    } else {
+        // 2. If it does not exist, proceed with insertion
+        $sql = "INSERT INTO food (food_name, category, calorie) VALUES ('$foodName', '$category', '$calories')";
         
-	$data = array($_POST['foodName'],$_POST['categories'],$_POST['calories']);
-
-	$fp = @fopen($myTextFile, 'a') 
-	or die("Couldn't open file 	for writing!");
-
-	@fwrite($fp, "\n");
-	foreach ($data as $v) {
-		@fwrite($fp, "$v\t");
-	}
-	
-	@fclose($fp);
+        if(mysqli_query($conn, $sql)) {
+            echo "<script>alert('Food added successfully!');</script>";
+        } else {
+            echo "<script>alert('Error adding food!');</script>";
+        }
     }
+  }
 ?>
 
 <section>
@@ -40,14 +51,13 @@
 <td>
 <select name="categories" id="categories">
   <option value="Protein">Protein</option>
-  <option value="Grains">Grains</option>
-  <option value="Fruits">Fruits</option>
-  <option value="Vegetables">Vegetables</option>
+  <option value="Carbohydrate">Carbohydrate</option>
+  <option value="Fruits/Vegetable">Fruits/Vegetable</option>
   <option value="Beverages">Beverages</option>
 </select>
 </tr> 
 <tr>	<td>Calories (kcal)</td>
-<td><input type = "text" name = "calories" /></td>	
+<td><input type = "number" name = "calories" required/></td>	
 </tr>
 <tr>
 <br />

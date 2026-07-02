@@ -1,16 +1,18 @@
 body {
   font-family: Arial, sans-serif;
-  background: rgb(227, 255, 227);
+  background: rgb(226, 250, 226);
   margin: 0;
 }
 
-.headTittle{
-    background:rgb(79, 180, 79);
-    font-family:arial; 
-    color:white;
-    text-align:center;
-    padding: 10px;          
+.headTittle {
+    background: rgb(79, 180, 79);
+    font-family: Arial, sans-serif;
+    color: white;
+    text-align: center;
+    padding: 20px; /* slightly more padding for balance */
+    font-size: 1.3em; /* increase this value for a larger title */
 }
+
 
 .center{
     text-align:center;

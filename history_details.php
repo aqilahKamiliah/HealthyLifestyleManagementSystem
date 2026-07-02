@@ -1,57 +1,113 @@
 <?php
-$client = isset($_GET['client']) ? $_GET['client'] : '';
+session_start();
+include 'connection.php';
 include 'headerCoach.php';
+
+if(!isset($_GET['session_id'])) {
+    die("No session selected.");
+}
+
+$session_id = intval($_GET['session_id']);
+
+/* ===============================
+   GET CLIENT FROM SESSION
+================================*/
+$sqlSession = "
+SELECT client_id
+FROM coaching_session
+WHERE session_id = $session_id
+";
+
+$resultSession = mysqli_query($conn, $sqlSession);
+
+if(!$resultSession || mysqli_num_rows($resultSession) == 0) {
+    die("Invalid session.");
+}
+
+$sessionData = mysqli_fetch_assoc($resultSession);
+$client_id = $sessionData['client_id'];
+
+/* ===============================
+   CLIENT INFO
+================================*/
+$sqlClient = "
+SELECT Users.name, Client.goal
+FROM Client
+JOIN Users ON Users.user_id = Client.user_id
+WHERE Client.client_id = $client_id
+";
+
+$resultClient = mysqli_query($conn, $sqlClient);
+$client = mysqli_fetch_assoc($resultClient);
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>History Details</title>
-    <link rel="stylesheet" type="text/css" href="style1.css">
+    <title>Client History</title>
 
     <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
         .container {
-            width: 90%;
-            margin: 30px auto;
+            width: 80%;
+            margin: auto;
+            padding: 20px 0;
+        }
+
+        .header {
             text-align: center;
+            margin-bottom: 30px;
         }
 
-        .history-grid {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin-top: 20px;
+        .header h2 {
+            margin-bottom: 5px;
+            font-size: 28px;
         }
 
-        .history-box {
-            width: 30%;
-            min-width: 250px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 15px;
-            text-align: left;
-            background: #fff;
+        .header p {
+            color: #666;
         }
 
-        .meal {
-            border: 1px solid #eee;
-            padding: 6px;
-            margin: 5px 0;
-            border-radius: 6px;
-            font-size: 14px;
+        .date-section {
+            margin-bottom: 25px;
         }
 
-        .total {
+        .date-title {
+            font-size: 18px;
             font-weight: bold;
-            margin-top: 10px;
+            color: #2e7d32;
+            margin-bottom: 10px;
         }
 
-        .back {
-            display: inline-block;
-            margin-top: 20px;
-            text-decoration: none;
-            color: blue;
+        .meal-box {
+            background: #fff;
+            border-radius: 12px;
+            padding: 15px 18px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 4px solid #4caf50;
+        }
+
+        .meal-type {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .food {
+            color: #555;
+            margin-bottom: 3px;
+        }
+
+        .calorie {
+            color: #777;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -60,90 +116,58 @@ include 'headerCoach.php';
 
 <div class="container">
 
-<?php if($client == "Ali") { ?>
-
-    <h2>Ali - History</h2>
-
-    <div class="history-grid">
-
-        <div class="history-box">
-            <h3>12 April 2026</h3>
-            <div class="meal">Breakfast: 500 kcal</div>
-            <div class="meal">Lunch: 800 kcal</div>
-            <div class="meal">Dinner: 885 kcal</div>
-            <div class="meal">Exercise: Cardio 10 min</div>
-            <div class="total">Total: 2185 kcal</div>
-        </div>
-
-        <div class="history-box">
-            <h3>13 April 2026</h3>
-            <div class="meal">Breakfast: 467 kcal</div>
-            <div class="meal">Lunch: 863 kcal</div>
-            <div class="meal">Dinner: 796 kcal</div>
-            <div class="meal">Exercise: Planks 5 min</div>
-            <div class="total">Total: 2126 kcal</div>
-        </div>
-
-        <div class="history-box">
-            <h3>14 April 2026</h3>
-            <div class="meal">Breakfast: 563 kcal</div>
-            <div class="meal">Lunch: 986 kcal</div>
-            <div class="meal">Dinner: 880 kcal</div>
-            <div class="meal">Exercise: Push ups 30</div>
-            <div class="total">Total: 2429 kcal</div>
-        </div>
-
+    <div class="header">
+        <h2><?php echo $client['name']; ?> - Food History</h2>
+        <p><b>Goal:</b> <?php echo $client['goal']; ?></p>
     </div>
 
-    <a class="back" href="coach_history.php">← Back</a>
+<?php
+$sql = "
+SELECT *
+FROM food_logs
+WHERE client_id = $client_id
+ORDER BY date DESC, meal_type
+";
 
-<?php } elseif($client == "Maya") { ?>
+$result = mysqli_query($conn, $sql);
 
-    <h2>Maya - History</h2>
+if(mysqli_num_rows($result) == 0) {
+    echo "<p style='text-align:center;'>No food logs yet.</p>";
+}
+else {
 
-    <div class="history-grid">
+    $currentDate = "";
 
-        <div class="history-box">
-            <h3>13 April 2026</h3>
-            <div class="meal">Breakfast: 700 kcal</div>
-            <div class="meal">Lunch: 900 kcal</div>
-            <div class="meal">Dinner: 1221 kcal</div>
-            <div class="meal">Exercise: Strength 10 min</div>
-            <div class="total">Total: 2821 kcal</div>
+    while($row = mysqli_fetch_assoc($result)) {
+
+        if($currentDate != $row['date']) {
+
+            if($currentDate != "") {
+                echo "</div>";
+            }
+
+            $currentDate = $row['date'];
+
+            echo "
+            <div class='date-section'>
+                <div class='date-title'>{$currentDate}</div>
+            ";
+        }
+
+        echo "
+        <div class='meal-box'>
+            <div class='meal-type'>{$row['meal_type']}</div>
+            <div class='food'>Food: {$row['food_names']}</div>
+            <div class='calorie'>Calories: {$row['calorie']} kcal</div>
         </div>
+        ";
+    }
 
-    </div>
-
-    <a class="back" href="coach_history.php">← Back</a>
-
-<?php } elseif($client == "Adi") { ?>
-
-    <h2>Adi - History</h2>
-
-    <div class="history-grid">
-
-        <div class="history-box">
-            <h3>14 April 2026</h3>
-            <div class="meal">Breakfast: 600 kcal</div>
-            <div class="meal">Lunch: 850 kcal</div>
-            <div class="meal">Dinner: 700 kcal</div>
-            <div class="meal">Exercise: Gym 20 min</div>
-            <div class="total">Total: 2150 kcal</div>
-        </div>
-
-    </div>
-
-    <a class="back" href="coach_history.php">← Back</a>
-
-<?php } else { ?>
-
-    <h2>No Client Selected</h2>
-    <a class="back" href="coach_history.php">← Back to History</a>
-
-<?php } ?>
+    echo "</div>";
+}
+?>
 
 </div>
 
 </body>
 </html>
-

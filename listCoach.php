@@ -9,42 +9,69 @@
 <body>
 <?php 
 include("headerAdmin.php");
+include("connection.php");
 ?>
 
 <div class="page-header">
-    <h3>All Coaches</h3>
+    <h2>All Coaches</h2>
     <button id="addButton" name="addButton" onclick="window.location.href='addCoach.php'">+ Add Coach</button>
 </div>
 
+<!-- Search Bar -->
+<div class="search-filter">
+  <form method="GET" action="">
+    <input type="text" name="search" placeholder="Search by name, email, or specialization..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" />
+    <button type="submit">Search</button>
+  </form>
+</div>
+
 <?php
-$fp = fopen("coachList.txt", "r") or die("Couldn't open the file");
+// Handle search input
+$search = "";
+if (isset($_GET['search'])) {
+    $search = mysqli_real_escape_string($conn, $_GET['search']);
+    $sql = "SELECT u.user_id, u.name, u.email, c.specialization, c.experience_years 
+            FROM users u 
+            JOIN coach c ON u.user_id = c.user_id
+            WHERE u.name LIKE '%$search%' 
+               OR u.email LIKE '%$search%' 
+               OR c.specialization LIKE '%$search%'";
+} else {
+    $sql = "SELECT u.user_id, u.name, u.email, c.specialization, c.experience_years 
+            FROM users u 
+            JOIN coach c ON u.user_id = c.user_id";
+}
 
-#Create table and six headings
-echo "<center><table border ='1' cellspacing ='1' cellpadding='2' valign 'center' width=50% >";
-echo "<tr style ='background: #f5f5f5'>"
-."<th>Name</th>"
-."<th>Email</th>"
-."<th>Phone Number</th>"
-."<th>Specialization</th>"
-."<th>Password</th>"
-."</tr>";
+$result = mysqli_query($conn, $sql);
 
-while(!feof($fp))
-	{
-		$data = fgets($fp,1024);
-		$values = chop ($data);
-		$val = explode("\t", $values);
-		echo "<tr><td> " . $val[0] . " </td>";
-		echo "<td align = 'center'>". $val[1] . "</td>";
-		echo "<td align = 'center'>". $val[2] . "</td>";
-		echo "<td align = 'center'>". $val[3] . "</td>";
-		echo "<td align = 'center'>". $val[4] . "</td>";
-		echo "</tr>";
-	}
-	echo "</table></center>";
+# Create table and headings
+echo "<center><table border='1' cellspacing='1' cellpadding='5' width='90%'>";
+echo "<tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Specialization</th>
+        <th>Experience (Years)</th>
+        <th>Actions</th>
+      </tr>";
 
-fclose($fp);
-?> 
+if (mysqli_num_rows($result) > 0) {
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo "<tr>
+                <td>" . htmlspecialchars($row['name']) . "</td>
+                <td>" . htmlspecialchars($row['email']) . "</td>
+                <td>" . htmlspecialchars($row['specialization']) . "</td>
+                <td align='center'>" . htmlspecialchars($row['experience_years']) . "</td>
+                <td align='center'>
+                    <a href='editCoach.php?id=" . $row['user_id'] . "'>Edit</a> | 
+                    <a href='deleteCoach.php?id=" . $row['user_id'] . "' onclick='return confirm(\"Are you sure?\")'>Delete</a>
+                </td>
+              </tr>";
+    }
+} else {
+    echo "<tr><td colspan='5' style='text-align:center;'>No coaches found.</td></tr>";
+}
+echo "</table></center>";
+?>
 
 </body>
 </html>
