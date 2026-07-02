@@ -1,24 +1,101 @@
 body {
   font-family: Arial, sans-serif;
-  background: rgb(227, 255, 227);
+  background: rgb(226, 250, 226);
   margin: 0;
 }
 
-.card{
-    width:200px;
-    height:130px;
-    background: rgb(192, 224, 192);
-    border:1px solid black;
-    border-radius:20px;
-    padding:20px;
+.headTittle {
+    background: rgb(79, 180, 79);
+    font-family: Arial, sans-serif;
+    color: white;
+    text-align: center;
+    padding: 20px; 
+    font-size: 1.2em; 
 }
 
-.dashboard{
+
+.center{
+    text-align:center;
+}
+
+nav{
+    background:#f5f5f5;
     display:flex;
     justify-content:center;
-    gap:30px;
-    padding:20px;
+    gap:40px;
+    padding:15px 0;
 }
+
+nav a{
+    text-decoration:none;
+    color:#333;
+    padding:10px 25px;
+    border-radius:6px;
+    transition:0.3s;
+}
+
+nav a:hover{
+    background:#50B848;
+    color:white;
+}
+
+nav a.active{
+    background:#50B848;
+    color:white;
+}
+
+/* admin file */
+
+.dashboard {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    padding: 40px 0;
+    flex-wrap: wrap;
+}
+
+.card {
+    width: 230px;
+    height: 140px;
+    background: #ffffff;
+    border: 1px solid #50B848;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: left;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Card Text */
+.card h4 {
+    color: #333;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+}
+
+.card p {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #50B848;
+    margin: 10px 0;
+}
+
+.card a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.card a:hover {
+    color: #0056b3;
+}
+
 
 .page-header{
     width: 60%;
@@ -51,16 +128,32 @@ text-align: center;
 
 .coachContainer {
     background: #ffffff;
-    padding: 30px 40px;
+    padding: 30px 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 600px;
+    max-width: 550px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 85%;
+    margin: 20px auto; /* increased margin for more space */
+    background: #ffffff; /* white background for the table */
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+th, td {
+    padding: 14px 18px; 
 }
 
 th {
-    text-align: left;
-    padding: 10px 0;
+    background-color: #50B848;
+    color: white;
+    font-weight: bold;
+    font-size: 1em;
 }
 
 input[type="submit"],
@@ -128,4 +221,38 @@ section{
     border-radius:15px;
     padding:18px 40px;
     cursor:pointer;
+}
+
+
+.search-filter {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.filter-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-filter input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    width: 450px; /* increased width for a longer search box */
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.search-filter button {
+    background: #50B848; /* same green as your theme */
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 6px; /* rounded corners */
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
 }
