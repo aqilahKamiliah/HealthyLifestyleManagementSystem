@@ -36,7 +36,7 @@
             margin: 0;
             font-size: 28px;
             font-weight: bold;
-            color: #1b5e20; /* Hijau pekat */
+            color: #1b5e20; 
         }
 
         .log-section-card {
@@ -143,7 +143,7 @@
                         <option value="Breakfast">Breakfast</option>
                         <option value="Lunch">Lunch</option>
                         <option value="Dinner">Dinner</option>
-                        <option value="Snack">Snack</option>
+                       
                     </select>
                 </div>
 

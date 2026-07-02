@@ -108,22 +108,29 @@ $client_id = $rowClient['Client_id'];
 
         <div class="suggestion-col-card">
             <h2>Meal Suggestions</h2>
-            <div class="sub-title">Today's Lunch</div>
-            
-            <?php
-$sql = "
-SELECT 
-    food.food_name,
-    food.calorie,
-    recommendation.type
-FROM recommendation
-JOIN recommendation_food 
-    ON recommendation.rec_id = recommendation_food.rec_id
-JOIN food 
-    ON recommendation_food.food_id = food.food_id
-WHERE recommendation.client_id = '$client_id'
+
+<?php
+$meals = ['Breakfast', 'Lunch', 'Dinner'];
+
+foreach($meals as $meal)
+{
+    echo "<div class='sub-title'>Today's $meal</div>";
+
+    $sql = "
+    SELECT 
+        food.food_name,
+        food.calorie,
+        recommendation.type
+    FROM recommendation
+    JOIN recommendation_food 
+        ON recommendation.rec_id = recommendation_food.rec_id
+    JOIN food 
+        ON recommendation_food.food_id = food.food_id
+    WHERE recommendation.client_id = '$client_id'
+AND recommendation.type = '$meal'
+AND recommendation.date = CURDATE()
 ORDER BY recommendation.rec_id DESC
-";
+    ";
 
 $result = mysqli_query($conn, $sql);
 
@@ -147,6 +154,7 @@ if (mysqli_num_rows($result) > 0) {
 } else {
     echo "<p>No meal suggestions yet.</p>";
 }
+}
 ?>
         </div>
 
@@ -154,20 +162,42 @@ if (mysqli_num_rows($result) > 0) {
             <h2>Workout Suggestions</h2>
             <div style="height: 45px;"></div> 
             
-            <div class="suggestion-item-box">
-                <div class="item-icon-box">─</div>
-                <span>Cardio Steady Paced<br><span style="font-size: 16px; font-weight: normal; color: #444;">30 Minutes</span></span>
-            </div>
+            <?php
+$sqlWorkout = "
+SELECT exercise.exercise_name, exercise.sets
+FROM client
+JOIN exercise 
+ON client.activity_level_id = exercise.activity_level_id
+WHERE client.Client_id = '$client_id'
+LIMIT 3
+";
 
-            <div class="suggestion-item-box">
-                <div class="item-icon-box">─</div>
-                <span>50 Jumping Jacks</span>
-            </div>
+$resultWorkout = mysqli_query($conn, $sqlWorkout);
 
-            <div class="suggestion-item-box">
-                <div class="item-icon-box">─</div>
-                <span>25 Walking Lunges</span>
-            </div>
+if(mysqli_num_rows($resultWorkout) > 0)
+{
+    while($workout = mysqli_fetch_assoc($resultWorkout))
+    {
+?>
+
+<div class="suggestion-item-box">
+    <div class="item-icon-box">─</div>
+    <span>
+        <?= $workout['exercise_name']; ?><br>
+        <span style="font-size: 16px; font-weight: normal; color: #444;">
+            <?= $workout['sets']; ?>
+        </span>
+    </span>
+</div>
+
+<?php
+    }
+}
+else
+{
+    echo "<p>No workout suggestions available.</p>";
+}
+?>
         </div>
 
     </div>

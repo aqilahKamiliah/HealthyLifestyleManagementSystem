@@ -4,7 +4,6 @@ include 'connection.php';
 
 $user_id = $_SESSION['user_id'];
 
-/* Ambil coach_id berdasarkan user yang login */
 $coachQuery = "SELECT coach_id
                FROM coach
                WHERE user_id = '$user_id'";
@@ -14,23 +13,37 @@ $coachData = mysqli_fetch_assoc($coachResult);
 
 $coach_id = $coachData['coach_id'];
 
-/* Kira jumlah client bawah coach tersebut */
+/* Total Active Clients */
 $queryClient = mysqli_query(
     $conn,
     "SELECT COUNT(*) AS total_clients
-     FROM client
-     WHERE coach_id = '$coach_id'"
+     FROM coaching_session
+     WHERE coach_id = '$coach_id'
+     AND status = 'Active'"
 );
 
 $dataClient = mysqli_fetch_assoc($queryClient);
 $totalClients = $dataClient['total_clients'];
 
-/* Kira jumlah evaluation yang dibuat oleh coach */
+/* Total Completed Sessions */
+$queryCompleted = mysqli_query(
+    $conn,
+    "SELECT COUNT(*) AS total_completed
+     FROM coaching_session
+     WHERE coach_id = '$coach_id'
+     AND status = 'Completed'"
+);
+
+$dataCompleted = mysqli_fetch_assoc($queryCompleted);
+$totalCompleted = $dataCompleted['total_completed'];
+
+/* Total Coach Evaluations */
 $queryEvaluation = mysqli_query(
     $conn,
     "SELECT COUNT(*) AS total_evaluations
      FROM evaluation
-     WHERE coach_id = '$coach_id'"
+     WHERE coach_id = '$coach_id'
+     AND evaluator = 'Coach'"
 );
 
 $dataEvaluation = mysqli_fetch_assoc($queryEvaluation);
@@ -50,18 +63,16 @@ $totalEvaluations = $dataEvaluation['total_evaluations'];
 
 <div style="width:80%; margin:30px auto;">
 
-    <!-- Dashboard Cards -->
     <div style="
         display:flex;
         justify-content:center;
-        gap:40px;
+        gap:30px;
         margin-bottom:40px;
         flex-wrap:wrap;
     ">
 
-        <!-- Total Clients Card -->
         <div style="
-            width:300px;
+            width:250px;
             padding:25px;
             border:1px solid #ccc;
             border-radius:15px;
@@ -70,7 +81,7 @@ $totalEvaluations = $dataEvaluation['total_evaluations'];
             box-shadow:0 2px 8px rgba(0,0,0,0.08);
         ">
 
-            <h3>Total Clients</h3>
+            <h3>Active Clients</h3>
 
             <h1 style="
                 color:#2e7d32;
@@ -80,13 +91,36 @@ $totalEvaluations = $dataEvaluation['total_evaluations'];
                 <?php echo $totalClients; ?>
             </h1>
 
-            <p>Active Clients</p>
+            <p>Current Coaching Sessions</p>
 
         </div>
 
-        <!-- Total Evaluations Card -->
         <div style="
-            width:300px;
+            width:250px;
+            padding:25px;
+            border:1px solid #ccc;
+            border-radius:15px;
+            text-align:center;
+            background:white;
+            box-shadow:0 2px 8px rgba(0,0,0,0.08);
+        ">
+
+            <h3>Completed Sessions</h3>
+
+            <h1 style="
+                color:#2196F3;
+                font-size:45px;
+                margin:15px 0;
+            ">
+                <?php echo $totalCompleted; ?>
+            </h1>
+
+            <p>Finished Coaching Sessions</p>
+
+        </div>
+
+        <div style="
+            width:250px;
             padding:25px;
             border:1px solid #ccc;
             border-radius:15px;
@@ -111,7 +145,6 @@ $totalEvaluations = $dataEvaluation['total_evaluations'];
 
     </div>
 
-    <!-- Coach Wellness Tip -->
     <div style="
         background:white;
         border:1px solid #ccc;

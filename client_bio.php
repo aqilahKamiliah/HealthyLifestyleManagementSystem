@@ -1,5 +1,5 @@
 <?php
-session_start(); // MESTI ada session_start()
+session_start(); 
 include 'connection.php';
 
 if (!isset($_SESSION['user_id'])) {
@@ -12,28 +12,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $gender         = $_POST['gender'];
     $height         = $_POST['height'];
     $weight         = $_POST['weight'];
-    $activity_level = $_POST['activity_level']; // Tukar dari activity_level_id kepada activity_level
-    $coach_id       = $_POST['coach_id'];
+    $activity_level = $_POST['activity_level'];
     $user_id        = $_SESSION['user_id'];
-    $goal = $_POST['goal']; // Guna ID dari login session
-
-    // Semak jika data sudah ada (UPDATE) atau belum (INSERT)
+    $goal = $_POST['goal']; 
     $check_query = "SELECT * FROM client WHERE user_id = '$user_id'";
     $check_res = mysqli_query($conn, $check_query);
 
     if (mysqli_num_rows($check_res) > 0) {
-        // Jika sudah ada, buat UPDATE
-        $query = "UPDATE client SET age='$age', gender='$gender', height='$height', weight='$weight', 
-                  activity_level_id='$activity_level', coach_id='$coach_id' WHERE user_id='$user_id'";
-                  $query = "UPDATE client SET age='$age', gender='$gender', height='$height', weight='$weight', 
-          activity_level_id='$activity_level', goal='$goal', coach_id='$coach_id' 
-          WHERE user_id='$user_id'";
+        $query = "UPDATE client SET
+age='$age',
+gender='$gender',
+height='$height',
+weight='$weight',
+activity_level_id='$activity_level',
+goal='$goal'
+WHERE user_id='$user_id'";
     } else {
-        // Jika belum ada, buat INSERT
-        $query = "INSERT INTO client (age, gender, height, weight, activity_level_id, user_id, coach_id) 
-                  VALUES ('$age', '$gender', '$height', '$weight', '$activity_level', '$user_id', '$coach_id')";
-                  $query = "INSERT INTO client (age, gender, height, weight, activity_level_id, goal, user_id, coach_id) 
-          VALUES ('$age', '$gender', '$height', '$weight', '$activity_level', '$goal', '$user_id', '$coach_id')"; 
+        $query = "INSERT INTO client
+(age, gender, height, weight, activity_level_id, goal, user_id)
+VALUES
+('$age', '$gender', '$height', '$weight', '$activity_level', '$goal', '$user_id')";
     }
 
     if (mysqli_query($conn, $query)) {
@@ -202,24 +200,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <label>Height (cm)</label>
                     <input type="number" name="height" placeholder="Number" required>
                 </div>
-
-                <div class="form-group">
-    <label>Select Your Coach</label>
-    <select name="coach_id" required>
-        <option value="" disabled selected>Select a coach</option>
-        <?php
-        // Ambil senarai coach dari database
-        $coach_query = "SELECT coach.coach_id, users.name 
-                        FROM coach 
-                        JOIN users ON coach.user_id = users.user_id";
-        $coach_res = mysqli_query($conn, $coach_query);
-        while($row = mysqli_fetch_assoc($coach_res)) {
-            echo "<option value='".$row['coach_id']."'>".$row['name']."</option>";
-        }
-        ?>
-    </select>
-</div>
-
                 <div class="form-group">
     <label>Activity Level</label>
     <select name="activity_level" required>

@@ -46,22 +46,43 @@ $coachData = mysqli_fetch_assoc($coachResult);
 
 $coach_id = $coachData['coach_id'];
 
-if(isset($_GET['client_id']))
+if(isset($_GET['client_id']) && isset($_GET['session_id']))
 {
     $client_id = $_GET['client_id'];
+    $session_id = $_GET['session_id'];
 
     $clientQuery = "SELECT users.name,
-                           client.goal
-                    FROM client
+                           client.goal,
+                           coaching_session.duration_month,
+                           coaching_session.start_date,
+                           coaching_session.end_date,
+                           coaching_session.status
+                    FROM coaching_session
+                    INNER JOIN client
+                    ON coaching_session.client_id = client.client_id
                     INNER JOIN users
                     ON client.user_id = users.user_id
-                    WHERE client.client_id = '$client_id'";
+                    WHERE coaching_session.session_id = '$session_id'
+                    AND coaching_session.client_id = '$client_id'";
 
     $clientResult = mysqli_query($conn, $clientQuery);
     $clientData = mysqli_fetch_assoc($clientResult);
 
     $name = $clientData['name'];
     $goal = $clientData['goal'];
+    $duration = $clientData['duration_month'];
+    $start_date = $clientData['start_date'];
+    $end_date = $clientData['end_date'];
+    $status = $clientData['status'];
+
+    $today = strtotime(date("Y-m-d"));
+    $end = strtotime($end_date);
+    $remaining = floor(($end - $today) / 86400);
+
+    if($remaining < 0)
+    {
+        $remaining = 0;
+    }
 
     $foodQuery = "SELECT *
                   FROM food_logs
@@ -118,129 +139,168 @@ if(isset($_GET['client_id']))
     }
 ?>
 
-    <h2><?php echo $name; ?></h2>
+<h2><?php echo $name; ?></h2>
 
-    <p>
-        <strong>Goal:</strong>
-        <?php echo $goal; ?>
-    </p>
+<p><strong>Goal:</strong> <?php echo $goal; ?></p>
 
-    <?php if(count($missingMeals) > 0) { ?>
+<div style="
+background:#f8f9fa;
+border:1px solid #ddd;
+border-radius:10px;
+padding:20px;
+margin-bottom:25px;">
 
-        <div style="
-            background:#ffe5e5;
-            color:#b30000;
-            padding:15px;
-            border-radius:10px;
-            width:400px;
-            margin-bottom:15px;
-            font-weight:bold;">
-            
-            ❌ Missing Food Log:
-            <?php echo implode(", ", $missingMeals); ?>
+<h3>Coaching Session</h3>
 
-        </div>
+<p><strong>Duration:</strong> <?php echo $duration; ?> Month(s)</p>
 
-        <form method="POST">
+<p><strong>Start Date:</strong> <?php echo $start_date; ?></p>
 
-            <input type="hidden"
-                   name="client_id"
-                   value="<?php echo $client_id; ?>">
+<p><strong>End Date:</strong> <?php echo $end_date; ?></p>
 
-            <input type="hidden"
-                   name="missing_meals"
-                   value="<?php echo implode(', ', $missingMeals); ?>">
+<p><strong>Status:</strong> <?php echo $status; ?></p>
 
-            <button
-                type="submit"
-                name="notify"
-                style="
-                    background:#ff9800;
-                    color:white;
-                    border:none;
-                    padding:10px 20px;
-                    border-radius:8px;
-                    cursor:pointer;
-                    margin-bottom:20px;">
+<p><strong>Remaining:</strong> <?php echo $remaining; ?> Day(s)</p>
 
-                Notify Client
+</div>
 
-            </button>
+<?php if(count($missingMeals) > 0) { ?>
 
-        </form>
+<div style="
+background:#ffe5e5;
+color:#b30000;
+padding:15px;
+border-radius:10px;
+width:400px;
+margin-bottom:15px;
+font-weight:bold;">
 
-    <?php } else { ?>
+❌ Missing Food Log:
+<?php echo implode(", ", $missingMeals); ?>
 
-        <div style="
-            background:#d4edda;
-            color:#155724;
-            padding:15px;
-            border-radius:10px;
-            width:300px;
-            margin-bottom:20px;
-            font-weight:bold;">
-            
-            ✅ Logged Today
+</div>
 
-        </div>
+<form method="POST">
 
-    <?php } ?>
+<input type="hidden"
+name="client_id"
+value="<?php echo $client_id; ?>">
 
-    <div style="display:flex; justify-content:center; gap:30px; margin-top:20px;">
+<input type="hidden"
+name="missing_meals"
+value="<?php echo implode(', ', $missingMeals); ?>">
 
-        <div style="border:1px solid #ccc; padding:20px; border-radius:10px; width:250px;">
-            <h3>Breakfast</h3>
-            <p>Food Name: <?php echo $breakfastFood; ?></p>
-            <p>Calories: <?php echo $breakfastCal; ?> kcal</p>
-        </div>
+<button
+type="submit"
+name="notify"
+style="
+background:#ff9800;
+color:white;
+border:none;
+padding:10px 20px;
+border-radius:8px;
+cursor:pointer;
+margin-bottom:20px;">
 
-        <div style="border:1px solid #ccc; padding:20px; border-radius:10px; width:250px;">
-            <h3>Lunch</h3>
-            <p>Food Name: <?php echo $lunchFood; ?></p>
-            <p>Calories: <?php echo $lunchCal; ?> kcal</p>
-        </div>
+Notify Client
 
-        <div style="border:1px solid #ccc; padding:20px; border-radius:10px; width:250px;">
-            <h3>Dinner</h3>
-            <p>Food Name: <?php echo $dinnerFood; ?></p>
-            <p>Calories: <?php echo $dinnerCal; ?> kcal</p>
-        </div>
+</button>
 
-    </div>
+</form>
 
-    <br>
+<?php } else { ?>
 
-    <a href="coach_clients.php">← Back</a>
+<div style="
+background:#d4edda;
+color:#155724;
+padding:15px;
+border-radius:10px;
+width:300px;
+margin-bottom:20px;
+font-weight:bold;">
+
+✅ Logged Today
+
+</div>
+
+<?php } ?>
+
+<div style="display:flex; justify-content:center; gap:30px; margin-top:20px;">
+
+<div style="border:1px solid #ccc; padding:20px; border-radius:10px; width:250px;">
+<h3>Breakfast</h3>
+<p>Food Name: <?php echo $breakfastFood; ?></p>
+<p>Calories: <?php echo $breakfastCal; ?> kcal</p>
+</div>
+
+<div style="border:1px solid #ccc; padding:20px; border-radius:10px; width:250px;">
+<h3>Lunch</h3>
+<p>Food Name: <?php echo $lunchFood; ?></p>
+<p>Calories: <?php echo $lunchCal; ?> kcal</p>
+</div>
+
+<div style="border:1px solid #ccc; padding:20px; border-radius:10px; width:250px;">
+<h3>Dinner</h3>
+<p>Food Name: <?php echo $dinnerFood; ?></p>
+<p>Calories: <?php echo $dinnerCal; ?> kcal</p>
+</div>
+
+</div>
+
+<br>
+
+<a href="coach_clients.php">← Back</a>
 
 <?php
 }
 else
 {
-    $sql = "SELECT users.name,
+        $sql = "SELECT users.name,
                    client.client_id,
-                   client.goal
-            FROM client
+                   client.goal,
+                   coaching_session.session_id,
+                   coaching_session.duration_month,
+                   coaching_session.start_date,
+                   coaching_session.end_date,
+                   coaching_session.status
+            FROM coaching_session
+            INNER JOIN client
+            ON coaching_session.client_id = client.client_id
             INNER JOIN users
             ON client.user_id = users.user_id
-            WHERE client.coach_id = '$coach_id'";
+            WHERE coaching_session.coach_id = '$coach_id'
+            AND coaching_session.status = 'Active'
+            ORDER BY coaching_session.end_date ASC";
 
     $result = mysqli_query($conn, $sql);
 
-    echo '<div style="display:flex; gap:20px; flex-wrap:wrap;">';
-
-    while($row = mysqli_fetch_assoc($result))
+    if(mysqli_num_rows($result) > 0)
     {
+        echo '<div style="display:flex; gap:20px; flex-wrap:wrap;">';
+
+        while($row = mysqli_fetch_assoc($result))
+        {
+            $today = strtotime(date("Y-m-d"));
+            $end = strtotime($row['end_date']);
+            $remaining = floor(($end - $today) / 86400);
+
+            if($remaining < 0)
+            {
+                $remaining = 0;
+            }
 ?>
 
-        <a href="coach_clients.php?client_id=<?php echo $row['client_id']; ?>"
+        <a href="coach_clients.php?client_id=<?php echo $row['client_id']; ?>&session_id=<?php echo $row['session_id']; ?>"
            style="text-decoration:none; color:black;">
 
             <div style="
                 border:1px solid #ccc;
                 padding:20px;
                 border-radius:10px;
-                width:220px;
-                cursor:pointer;">
+                width:250px;
+                cursor:pointer;
+                background:white;
+                box-shadow:0 2px 8px rgba(0,0,0,0.08);">
 
                 <h3><?php echo $row['name']; ?></h3>
 
@@ -254,14 +314,73 @@ else
                     <?php echo $row['goal']; ?>
                 </p>
 
+                <hr>
+
+                <p>
+                    <strong>Duration:</strong>
+                    <?php echo $row['duration_month']; ?> Month(s)
+                </p>
+
+                <p>
+                    <strong>Start:</strong>
+                    <?php echo $row['start_date']; ?>
+                </p>
+
+                <p>
+                    <strong>End:</strong>
+                    <?php echo $row['end_date']; ?>
+                </p>
+
+                <p>
+                    <strong>Remaining:</strong>
+                    <?php echo $remaining; ?> Day(s)
+                </p>
+
+                <p>
+                    <strong>Status:</strong>
+
+                    <?php
+                    if($row['status'] == "Active")
+                    {
+                        echo "<span style='color:green;font-weight:bold;'>Active</span>";
+                    }
+                    else
+                    {
+                        echo "<span style='color:red;font-weight:bold;'>Completed</span>";
+                    }
+                    ?>
+                </p>
+
             </div>
 
         </a>
 
 <?php
-    }
+        }
 
-    echo '</div>';
+        echo '</div>';
+    }
+    else
+    {
+?>
+
+    <div style="
+        background:white;
+        padding:30px;
+        border-radius:10px;
+        text-align:center;
+        border:1px solid #ddd;">
+
+        <h3>No Active Clients</h3>
+
+        <p>
+            You currently do not have any active coaching sessions.
+        </p>
+
+    </div>
+
+<?php
+    }
 }
 ?>
 
