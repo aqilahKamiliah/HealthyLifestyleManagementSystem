@@ -3,18 +3,38 @@ session_start();
 include 'connection.php';
 include 'headerCoach.php';
 
-if(!isset($_GET['client_id'])) {
-    die("No client selected.");
+if(!isset($_GET['session_id'])) {
+    die("No session selected.");
 }
 
-$client_id = $_GET['client_id'];
+$session_id = intval($_GET['session_id']);
 
-/* CLIENT INFO */
+/* ===============================
+   GET CLIENT FROM SESSION
+================================*/
+$sqlSession = "
+SELECT client_id
+FROM coaching_session
+WHERE session_id = $session_id
+";
+
+$resultSession = mysqli_query($conn, $sqlSession);
+
+if(!$resultSession || mysqli_num_rows($resultSession) == 0) {
+    die("Invalid session.");
+}
+
+$sessionData = mysqli_fetch_assoc($resultSession);
+$client_id = $sessionData['client_id'];
+
+/* ===============================
+   CLIENT INFO
+================================*/
 $sqlClient = "
 SELECT Users.name, Client.goal
 FROM Client
 JOIN Users ON Users.user_id = Client.user_id
-WHERE Client.Client_id = $client_id
+WHERE Client.client_id = $client_id
 ";
 
 $resultClient = mysqli_query($conn, $sqlClient);
@@ -40,7 +60,6 @@ $client = mysqli_fetch_assoc($resultClient);
             padding: 20px 0;
         }
 
-        /* HEADER */
         .header {
             text-align: center;
             margin-bottom: 30px;
@@ -55,7 +74,6 @@ $client = mysqli_fetch_assoc($resultClient);
             color: #666;
         }
 
-        /* DATE CARD */
         .date-section {
             margin-bottom: 25px;
         }
@@ -67,7 +85,6 @@ $client = mysqli_fetch_assoc($resultClient);
             margin-bottom: 10px;
         }
 
-        /* MEAL CARD */
         .meal-box {
             background: #fff;
             border-radius: 12px;
@@ -92,7 +109,6 @@ $client = mysqli_fetch_assoc($resultClient);
             color: #777;
             font-size: 14px;
         }
-
     </style>
 </head>
 
@@ -124,10 +140,8 @@ else {
 
     while($row = mysqli_fetch_assoc($result)) {
 
-        // NEW DATE HEADER
         if($currentDate != $row['date']) {
 
-            // close previous section (just visual separation)
             if($currentDate != "") {
                 echo "</div>";
             }
@@ -136,21 +150,19 @@ else {
 
             echo "
             <div class='date-section'>
-                <div class='date-title'> {$currentDate}</div>
+                <div class='date-title'>{$currentDate}</div>
             ";
         }
 
-        // MEAL CARD
         echo "
         <div class='meal-box'>
-            <div class='meal-type'> {$row['meal_type']}</div>
+            <div class='meal-type'>{$row['meal_type']}</div>
             <div class='food'>Food: {$row['food_names']}</div>
             <div class='calorie'>Calories: {$row['calorie']} kcal</div>
         </div>
         ";
     }
 
-    // close last section
     echo "</div>";
 }
 ?>
