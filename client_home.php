@@ -322,6 +322,21 @@ body {
     font-weight: bold;
 }
 
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    background: #c0392b;
+}
+
 </style>
 </head>
 <body>
@@ -380,24 +395,65 @@ function skipModal()
             <h3 class="card-title" style="text-align: left;">Today's Activity & Log</h3>
             <span style="font-size: 13px; font-weight: bold; color: #555; display:block; margin-bottom: 10px;">Today</span>
             <?php
-            $sqlFood = "SELECT food_names, calorie, meal_type FROM food_logs WHERE client_id = '$client_id' AND date = CURDATE() ORDER BY log_id DESC";
+            $sqlFood = "SELECT log_id, food_names, calorie, meal_type
+FROM food_logs
+WHERE client_id = '$client_id'
+AND date = CURDATE()
+ORDER BY log_id DESC";
             $foodResult = mysqli_query($conn, $sqlFood);
             if(mysqli_num_rows($foodResult) > 0) {
                 while($food = mysqli_fetch_assoc($foodResult)) {
-                    echo "<div class='log-item'><div class='log-icon'>🍽️</div><div class='log-details'><b>{$food['meal_type']}: {$food['food_names']}</b><span>({$food['calorie']} kcal)</span></div></div>";
-                }
+    echo "
+    <div class='log-item'>
+        <div class='log-icon'>🍽️</div>
+
+        <div class='log-details'>
+            <b>{$food['meal_type']}: {$food['food_names']}</b>
+            <span>({$food['calorie']} kcal)</span>
+        </div>
+
+        <form action='delete_food_log.php' method='POST'>
+            <input type='hidden' name='log_id' value='{$food['log_id']}'>
+            <button type='submit' class='delete-btn'
+            onclick=\"return confirm('Delete this meal?')\">
+        Remove Meal
+            </button>
+        </form>
+    </div>";
+}
             } else { echo "<p>No food logged today.</p>"; }
             ?>
             <a href="client_log.php" class="btn-log-meal">+ LOG A NEW MEAL</a>
             <div class="todo-section">
                 <h4>Exercise Log</h4>
                 <?php
-                $sqlExercise = "SELECT activity, duration, intensity FROM exercise_logs WHERE client_id = '$client_id' AND date = CURDATE() ORDER BY log_id DESC LIMIT 3";
+                $sqlExercise = "SELECT log_id, activity, duration, intensity
+FROM exercise_logs
+WHERE client_id = '$client_id'
+AND date = CURDATE()
+ORDER BY log_id DESC
+LIMIT 3";
                 $exerciseResult = mysqli_query($conn, $sqlExercise);
                 if(mysqli_num_rows($exerciseResult) > 0) {
                     while($ex = mysqli_fetch_assoc($exerciseResult)) {
-                        echo "<div class='log-item'><div class='log-icon'>🏃</div><div class='log-details'><b>{$ex['activity']}</b><span>{$ex['duration']} min, {$ex['intensity']}</span></div></div>";
-                    }
+    echo "
+    <div class='log-item'>
+        <div class='log-icon'>🏃</div>
+
+        <div class='log-details'>
+            <b>{$ex['activity']}</b>
+            <span>{$ex['duration']} min, {$ex['intensity']}</span>
+        </div>
+
+        <form action='delete_exercise_log.php' method='POST'>
+            <input type='hidden' name='log_id' value='{$ex['log_id']}'>
+            <button type='submit' class='delete-btn'
+            onclick=\"return confirm('Delete this exercise?')\">
+            Remove Exercise
+            </button>
+        </form>
+    </div>";
+}
                 } else { echo "<p>No exercise logged today.</p>"; }
                 ?>
                 <a href="client_log.php" class="btn-log-meal">+ LOG A NEW EXERCISE</a>
