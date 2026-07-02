@@ -6,13 +6,13 @@ include 'headerClient.php';
 $user_id = $_SESSION['user_id'] ?? 0;
 
 // Get Client ID
-$clientSql = "SELECT client_id
-              FROM client
+$clientSql = "SELECT Client_id
+              FROM Client
               WHERE user_id='$user_id'";
 $clientResult = mysqli_query($conn, $clientSql);
 $client = mysqli_fetch_assoc($clientResult);
 
-$client_id = $client['client_id'] ?? 0;
+$client_id = $client['Client_id'] ?? 0;
 
 if($client_id == 0)
 {
@@ -84,13 +84,22 @@ if(isset($_POST['start_session']))
     )";
 
     if(mysqli_query($conn,$insert))
+{
+    $updateClientCoach = "UPDATE client
+                          SET coach_id = '$coach_id'
+                          WHERE Client_id = '$client_id'";
+
+   if(!mysqli_query($conn, $updateClientCoach))
     {
-        echo "<script>
-        alert('Coaching session started successfully!');
-        window.location='client_coach_page2.php';
-        </script>";
-        exit();
+        die("Update coach error: " . mysqli_error($conn));
     }
+
+    echo "<script>
+    alert('Coaching session started successfully!');
+    window.location='client_profile.php';
+    </script>";
+    exit();
+}
     else
     {
         echo mysqli_error($conn);
