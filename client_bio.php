@@ -204,11 +204,9 @@ VALUES
     <label>Activity Level</label>
     <select name="activity_level" required>
         <option value="" disabled selected>Select level</option>
-        <option value="1">Not Very Active</option>
-        <option value="2">Lightly Active</option>
-        <option value="3">Moderate</option>
-        <option value="4">Active</option>
-        <option value="5">Very Active</option>
+        <option value="1">Low</option>
+        <option value="2">Medium</option>
+        <option value="3">High</option>
     </select>
 </div>
 
