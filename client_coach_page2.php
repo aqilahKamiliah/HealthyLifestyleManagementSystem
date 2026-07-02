@@ -5,7 +5,7 @@ include 'headerClient.php';
 
 $user_id = $_SESSION['user_id'] ?? 0;
 
-// Get Client ID
+
 $clientSql = "SELECT client_id
               FROM client
               WHERE user_id='$user_id'";
@@ -21,7 +21,7 @@ if($client_id == 0)
     exit();
 }
 
-// Get ACTIVE coaching session
+
 $sessionSql = "SELECT cs.*,
                       u.name,
                       c.specialization,
@@ -59,7 +59,7 @@ if($remaining_days < 0)
     $remaining_days = 0;
 }
 
-// Average Rating
+
 $ratingSql = "SELECT AVG(rating) AS avg_rating
               FROM evaluation
               WHERE coach_id='$coach_id'";
@@ -70,7 +70,7 @@ $ratingRow = mysqli_fetch_assoc($ratingResult);
 $avg_rating = $ratingRow['avg_rating'] ?? 0;
 
 
-// Client Evaluation
+
 $checkEvalSql = "SELECT *
                  FROM evaluation
                  WHERE session_id='$session_id'
@@ -82,7 +82,7 @@ $checkEvalResult = mysqli_query($conn,$checkEvalSql);
 $existingEval = mysqli_fetch_assoc($checkEvalResult);
 
 
-// Submit Evaluation
+
 if(isset($_POST['submit_evaluation']) && !$existingEval)
 {
 
@@ -240,7 +240,7 @@ if(isset($_POST['submit_evaluation']) && !$existingEval)
 
             <?php
                 }
-                // Session finished
+                
                 else
                 {
                 if($existingEval)

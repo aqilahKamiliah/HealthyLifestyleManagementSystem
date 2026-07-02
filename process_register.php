@@ -11,12 +11,12 @@ if(isset($_POST['register']))
     $result = mysqli_query($conn, $check_email);
 
     if(mysqli_num_rows($result) > 0) {
-        echo "<script>alert('Email sudah berdaftar!'); window.location.href='index.php';</script>";
+        echo "<script>alert('This email is already registered'); window.location.href='index.php';</script>";
     } else {
         $sql = "INSERT INTO Users (name, email, password, role) VALUES ('$name', '$email', '$password', '$role')";
         
         if(mysqli_query($conn, $sql)) {
-            echo "<script>alert('Akaun berjaya dicipta! Sila login.'); window.location.href='index.php';</script>";
+            echo "<script>alert(''Account created successfully! Please log in.'); window.location.href='index.php';</script>";
         } else {
             echo "Error: " . $sql . "<br>" . mysqli_error($conn);
         }
