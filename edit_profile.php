@@ -143,9 +143,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="form-group">
                 <label>Activity Level</label>
                 <select name="activity_level" required>
-                    <option value="1" <?php if($data['activity_level_id'] == 1) echo 'selected'; ?>>Not Very Active</option>
-                    <option value="2" <?php if($data['activity_level_id'] == 2) echo 'selected'; ?>>Lightly Active</option>
-                    <option value="3" <?php if($data['activity_level_id'] == 3) echo 'selected'; ?>>Moderate</option>
+                    <option value="1" <?php if($data['activity_level_id'] == 1) echo 'selected'; ?>>Low</option>
+                    <option value="2" <?php if($data['activity_level_id'] == 2) echo 'selected'; ?>>Moderate</option>
+                    <option value="3" <?php if($data['activity_level_id'] == 3) echo 'selected'; ?>>High</option>
                     
                 </select>
             </div>
