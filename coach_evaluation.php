@@ -79,7 +79,7 @@ if(isset($_POST['submit_evaluation']))
     {
         mysqli_query($conn,"
         UPDATE coaching_session
-        SET coach_evaluated='1'
+        SET coach_evaluated='Yes'
         WHERE session_id='$session_id'
         ");
 
@@ -92,8 +92,8 @@ if(isset($_POST['submit_evaluation']))
 
         $completeData = mysqli_fetch_assoc($completeQuery);
 
-        if($completeData['client_evaluated']==1 &&
-           $completeData['coach_evaluated']==1)
+        if($completeData['client_evaluated']=='Yes' &&
+        $completeData['coach_evaluated']=='Yes')
         {
             mysqli_query($conn,"
             UPDATE coaching_session
@@ -270,25 +270,67 @@ if(!$sessionEnded)
 else
 {
     if($alreadyEvaluated)
-    {
+{
+    $clientEvalQuery = mysqli_query($conn,"
+    SELECT rating, feedback, date
+    FROM evaluation
+    WHERE session_id='$session_id'
+    AND evaluator='Client'
+    LIMIT 1
+    ");
+
+    $clientEval = mysqli_fetch_assoc($clientEvalQuery);
 ?>
 
-    <div style="
-        background:#d4edda;
-        color:#155724;
-        padding:15px;
-        border-radius:10px;
-        text-align:center;
-        font-weight:bold;">
+<div style="
+    background:#d4edda;
+    color:#155724;
+    padding:15px;
+    border-radius:10px;
+    text-align:center;
+    font-weight:bold;
+    margin-bottom:15px;">
 
-        ✔ Evaluation Submitted
+    ✔ Evaluation Submitted
 
-    </div>
+</div>
 
 <?php
-    }
-    else
-    {
+if($clientEval)
+{
+?>
+<div style="
+    background:#f8f9fa;
+    border:1px solid #ddd;
+    border-radius:10px;
+    padding:15px;">
+
+    <h4 style="margin-top:0;color:#2e7d32;">
+        Client Feedback
+    </h4>
+
+    <p>
+        <strong>Rating:</strong>
+        <?php echo $clientEval['rating']; ?>/5 ⭐
+    </p>
+
+    <p>
+        <strong>Feedback:</strong><br>
+        <?php echo $clientEval['feedback']; ?>
+    </p>
+
+    <p>
+        <strong>Date:</strong>
+        <?php echo $clientEval['date']; ?>
+    </p>
+
+</div>
+
+<?php
+}
+}
+else
+{
 ?>
 
 <form method="POST">

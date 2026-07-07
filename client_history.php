@@ -56,31 +56,6 @@ $total_log = $logCountData['total_log'] ?? 0;
             </div>
         </div>
 
-        <div class="card">
-            <h2>Food Log Summary</h2>
-            <div class="chart">
-                <?php
-                $foodSummarySql = "SELECT * FROM food_logs
-                                   WHERE client_id = '$client_id'
-                                   ORDER BY date DESC
-                                   LIMIT 5";
-                $foodSummaryResult = mysqli_query($conn, $foodSummarySql);
-
-                if(mysqli_num_rows($foodSummaryResult) > 0)
-                {
-                    while($food = mysqli_fetch_assoc($foodSummaryResult))
-                    {
-                        echo $food['date'] . " - " . $food['meal_type'] . "<br>";
-                        echo $food['food_names'] . " (" . $food['calorie'] . " kcal)<br><br>";
-                    }
-                }
-                else
-                {
-                    echo "No food log available.";
-                }
-                ?>
-            </div>
-        </div>
 
         <div class="card">
             <h2>Total Food Logs</h2>
