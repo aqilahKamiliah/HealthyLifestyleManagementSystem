@@ -41,7 +41,7 @@ if(isset($_POST['confirmButton']))
 ?>
 
 <body>
-    <?php include("headerCoach.php"); ?>
+    <?php include("headerClient.php"); ?>
 
     <div class="logoutContainer">
     <div class="logoutHeader">
