@@ -117,9 +117,34 @@ if(isset($_POST['submit_evaluation']) && !$existingEval)
 
         mysqli_query($conn,"
         UPDATE coaching_session
-        SET client_evaluated=1
+        SET client_evaluated='Yes'
         WHERE session_id='$session_id'
         ");
+        
+        $checkComplete = mysqli_query($conn,"
+        SELECT client_evaluated,
+            coach_evaluated
+        FROM coaching_session
+        WHERE session_id='$session_id'
+        ");
+
+        $completeData = mysqli_fetch_assoc($checkComplete);
+
+        if($completeData['client_evaluated']=='Yes' &&
+        $completeData['coach_evaluated']=='Yes')
+        {
+            mysqli_query($conn,"
+            UPDATE coaching_session
+            SET status='Completed'
+            WHERE session_id='$session_id'
+            ");
+
+            mysqli_query($conn,"
+            UPDATE client
+            SET coach_id=NULL
+            WHERE client_id='$client_id'
+            ");
+        }
 
         echo "<script>
         alert('Evaluation submitted successfully!');

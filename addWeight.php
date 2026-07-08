@@ -50,6 +50,12 @@ VALUES('$weight', '$date', '$client_id')";
 
 if(mysqli_query($conn, $sql))
 {
+    mysqli_query($conn, "
+    UPDATE client
+    SET weight='$weight'
+    WHERE client_id='$client_id'
+    ");
+
     echo "<script>
         alert('Weight updated successfully!');
         window.location='client_home.php';

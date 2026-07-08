@@ -139,7 +139,7 @@ if (mysqli_num_rows($result) > 0) {
 ?>
 
 <div class="suggestion-item-box">
-    <div class="item-icon-box">─</div>
+    
     <span>
         <?= $row['food_name']; ?>
         <br>
@@ -181,11 +181,10 @@ if(mysqli_num_rows($resultWorkout) > 0)
 ?>
 
 <div class="suggestion-item-box">
-    <div class="item-icon-box">─</div>
     <span>
         <?= $workout['exercise_name']; ?><br>
         <span style="font-size: 16px; font-weight: normal; color: #444;">
-            <?= $workout['sets']; ?>
+            <?= $workout['sets']; ?> sets
         </span>
     </span>
 </div>
