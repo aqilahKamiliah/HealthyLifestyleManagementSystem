@@ -75,10 +75,20 @@ $percentage = 0;
 if($goalCalories > 0) {
     $percentage = round(($currentIntake / $goalCalories) * 100);
 }
-if($percentage > 100) { $percentage = 100; }
-$remaining = $goalCalories - $currentIntake;
-if($remaining < 0) { $remaining = 0; }
 
+$remaining = $goalCalories - $currentIntake;
+$excessCalories = 0;
+
+if($remaining < 0) {
+    $excessCalories = abs($remaining);
+    $remaining = 0;
+}
+$ringColor = "#4caf50"; 
+
+if($currentIntake > $goalCalories)
+{
+    $ringColor = "#f44336"; 
+}
 include 'headerClient.php'; 
 ?>
 
@@ -375,11 +385,14 @@ function skipModal()
         <div class="dashboard-col">
             <h3 class="card-title">Daily Calories Consumed</h3>
             <div class="progress-box"
-                style="background:
-                radial-gradient(circle, #e8f5e9 60%, transparent 61%),
-                conic-gradient(#4caf50 0% <?= $percentage; ?>%, #c8e6c9 <?= $percentage; ?>% 100%);">
+style="background:
+radial-gradient(circle, #e8f5e9 60%, transparent 61%),
+conic-gradient(<?= $ringColor; ?> 0% <?= $percentage; ?>%, #c8e6c9 <?= $percentage; ?>% 100%);">
                 <div class="progress-text">
-                    <span class="percentage"><?= $percentage; ?>%</span>
+                    <span class="percentage"
+style="color:<?= ($currentIntake > $goalCalories) ? '#f44336' : '#111'; ?>">
+<?= $percentage; ?>%
+</span>
                     <span class="stats"><?= $currentIntake; ?> / <?= $goalCalories; ?><br>kcal</span>
                 </div>
             </div>
@@ -387,6 +400,20 @@ function skipModal()
                 <div class="badge badge-current"><span>Current Intake:</span><?= $currentIntake; ?> kcal</div>
                 <div class="badge badge-goal"><span>Goal:</span><?= $goalCalories; ?> kcal</div>
                 <div class="badge badge-remaining"><span>Remaining:</span><?= $remaining; ?> kcal</div>
+                <?php if($excessCalories > 0) { ?>
+    <div style="
+        margin-top:15px;
+        background:#ffebee;
+        color:#c62828;
+        padding:12px;
+        border-radius:8px;
+        text-align:center;
+        font-weight:bold;
+        font-size:13px;">
+        ⚠ You consumed too much calories!<br>
+        Excess: <?= $excessCalories; ?> kcal
+    </div>
+<?php } ?>
             </div>
         </div>
 
